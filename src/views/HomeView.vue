@@ -1,198 +1,347 @@
 <template>
-  <main class="container py-3">
-    <header class="text-center header-background">
-      <h1>Plataforma Local</h1>
-      <div class="decorative-line"></div>
-      <p>Gestión de proyectos y seguimiento institucional</p>
-    </header>
-    <!-- Example row of columns -->
-    <hr>
-    <div class="container">
-      <div class="row align-items-center">
-        <div class="col-md-7 d-flex justify-content-center">
-          <img src="@/assets/img/home/portada1.png" alt="Your Image" class="img-fluid per-img">
-        </div>
-        <div class="col-md-5">
-          <div class="row">
-            <div class="col-md-6">
-              <div class="card shadow mb-3">
-                <img src="@/assets/img/poi/poi.png" alt="Plataforma POI"
-                  class="card-img-top rounded-top img-fluid w-25 mx-auto">
-                <div class="card-body text-center">
-                  <h5 class="card-title">Sistema de Seguimiento Institucional</h5>
-                  <p class="card-text">DGOS - DIEM - DIMON</p>
-                  <!-- Botón con ícono de Font Awesome -->
-                  <a hraf="">
-                    <i class="fas fa-paper-plane"></i>
-                  </a>
-                </div>
+  <div class="container mt-4">
+    <div class="card">
+      <!-- Encabezado principal -->
+      <div class="card-header bg-primary text-white mb-3">
+        Datos de Monitoreo
+      </div>
+      <div class="card-body">
+        <form @submit.prevent="guardarDatos">
+          <!-- Primera fila -->
+          <div class="container">
+            <!-- Primer título: Monitor -->
+            <div class="row">
+              <div class="col-md-12">
+                <h3><strong>Monitor</strong></h3>
               </div>
-              <div class="card shadow mb-3">
-                <img src="@/assets/img/home/control.png" alt="Plataforma POI"
-                  class="card-img-top rounded-top img-fluid w-25 mx-auto">
-                <div class="card-body text-center">
-                  <h5 class="card-title">Control DGOS</h5>
-                  <p class="card-text">Módulos de reporte</p>
-                  <!-- Botón con ícono de Font Awesome -->
-                  <a hraf="">
-                    <i class="fas fa-paper-plane"></i>
-                  </a>
-                </div>
+              <div class="col-md-4 col-sm-12">
+                <label for="titulo" class="form-label"><strong>Título:</strong></label>
+                <input type="text" class="form-control" id="titulo" v-model="titulo" placeholder="Ingrese el título"
+                  required>
               </div>
-              <div class="card shadow mb-1">
-                <img src="@/assets/img/home/notas.png" alt="Plataforma POI"
-                  class="card-img-top rounded-top img-fluid w-25 mx-auto">
-                <div class="card-body text-center">
-                  <h5 class="card-title">SGD - Pendientes</h5>
-                  <p class="card-text">DGOS - DIEM - DIMON</p>
-                  <!-- Botón con ícono de Font Awesome -->
-                  <a class="btn btn-success btn-sm rounded-circle">
-                    <i class="fas fa-paper-plane"></i>
-                  </a>
-                </div>
+              <div class="col-md-4 col-sm-12">
+                <label for="nombre" class="form-label"><strong>Nombre:</strong></label>
+                <input type="text" class="form-control" id="nombre" v-model="nombre" placeholder="Ingrese su nombre"
+                  required>
+              </div>
+              <div class="col-md-4 col-sm-12">
+                <label for="usuario" class="form-label"><strong>Usuario:</strong></label>
+                <input type="text" class="form-control" id="usuario" v-model="usuario" placeholder="Ingrese su usuario"
+                  required>
               </div>
             </div>
-            <div class="col-md-6">
-              <div class="card shadow mb-3">
-                <img src="@/assets/img/presupuesto.png" alt="Plataforma POI"
-                  class="card-img-top rounded-top img-fluid w-25 mx-auto">
-                <div class="card-body text-center">
-                  <h5 class="card-title">Gasto Diario <br class="py-2">DGOS DIEM</h5>
-                  <p class="card-text">BI Presupuesto</p>
-                  <!-- Botón con ícono de Font Awesome -->
-                  <a href="https://app.powerbi.com/view?r=eyJrIjoiMTg2NjhjNTktMTBkMC00ODUyLTlmNzgtYTJjNjM0NTBmNTViIiwidCI6Ijc5MDVjMWZjLTkzM2MtNDUyYS04YjgzLWIyZTU2NDU1ZDE2YSIsImMiOjR9"
-                    target="_blank" class="btn btn-success btn-sm rounded-circle">
-                    <i class="fas fa-paper-plane"></i>
-                  </a>
-                </div>
+
+            <hr>
+
+            <!-- Segundo título: Establecimiento -->
+            <div class="row">
+              <div class="col-md-12">
+                <h3><strong>Establecimiento</strong></h3>
               </div>
-              <div class="card shadow mb-3">
-                <img src="@/assets/img/zoom/zoom.png" alt="Plataforma POI"
-                  class="card-img-top rounded-top img-fluid w-25 mx-auto">
-                <div class="card-body text-center">
-                  <h5 class="card-title">En desarrollo</h5>
-                  <p class="card-text">Próximamente disponible.</p>
-                  <!-- Botón con ícono de Font Awesome -->
-                  <a hraf="">
-                    <i class="fas fa-paper-plane"></i>
-                  </a>
-                </div>
+              <div class="col-md-4 col-sm-12">
+                <label for="ipress" class="form-label"><strong>IPRESS:</strong></label>
+                <input type="text" class="form-control" id="ipress" v-model="ipress"
+                  placeholder="Ingrese el nombre de la IPRESS" required>
               </div>
-              <div class="card shadow mb-3">
-                <img src="@/assets/img/desarollo.png" alt="Plataforma POI"
-                  class="card-img-top rounded-top img-fluid w-25 mx-auto">
-                <div class="card-body text-center">
-                  <h5 class="card-title">En desarrollo</h5>
-                  <p class="card-text">Próximamente disponible.</p>
-                  <!-- Botón con ícono de Font Awesome -->
-                  <a class="btn btn-success btn-sm rounded-circle">
-                    <i class="fas fa-paper-plane"></i>
-                  </a>
+              <div class="col-md-4 col-sm-12">
+                <label for="categoria" class="form-label"><strong>Categoría:</strong></label>
+                <input type="text" class="form-control" id="categoria" v-model="categoria"
+                  placeholder="Ingrese la categoría" required>
+              </div>
+              <div class="col-md-4 col-sm-12">
+                <label for="codigo" class="form-label"><strong>Código:</strong></label>
+                <input type="text" class="form-control" id="codigo" v-model="codigo" placeholder="Ingrese el código"
+                  required>
+              </div>
+              <div class="col-md-4 col-sm-12">
+                <label for="diresa" class="form-label"><strong>Diresa/Geresa/Diris:</strong></label>
+                <input type="text" class="form-control" id="diresa" v-model="diresa"
+                  placeholder="Ingrese Diresa/Geresa/Diris" required>
+              </div>
+              <div class="col-md-4 col-sm-12">
+                <label for="hora_atencion" class="form-label"><strong>Hora de Atención:</strong></label>
+                <input type="text" class="form-control" id="hora_atencion" v-model="hora_atencion"
+                  placeholder="Fecha y hora de atención" readonly required>
+              </div>
+            </div>
+
+            <hr>
+
+            <!-- Ítems -->
+            <div class="row">
+              <div class="row">
+                <div class="col-md-12">
+                  <h3><strong>ORGANIZACIÓN DE LA ATENCION DEL ESTABLECIMIENTO DE SALUD: ASPECTOS GENERALES</strong></h3>
                 </div>
+                <hr>
+
+                <!-- Ítem 1 -->
+                <div class="row">
+                  <div class="col-md-5 col-sm-12">
+                    <label for="item1" class="form-label"><strong>El Jefe del E.S organiza sus servicios de
+                        salud...</strong></label>
+                  </div>
+                  <div class="col-md-2 col-sm-12">
+                    <select v-model="item1" class="form-select" required>
+                      <option value="SI">SI</option>
+                      <option value="NO">NO</option>
+                      <option value="NO APLICA">NO APLICA</option>
+                    </select>
+                  </div>
+                  <div class="col-md-5 col-sm-12" style="position: relative;">
+                    <input type="text" class="form-control ms-2" v-model="observacionItem1"
+                      @input="filtrarSugerencias('observacionItem1')" placeholder="Observaciones" required />
+                    <small class="form-text text-muted">Se evidencia que si tiene plan de actividades y el responsable
+                      está activo.</small>
+                    <div v-if="sugerenciasPorCampo.observacionItem1.length > 0" class="sugerencias">
+                      <ul>
+                        <li v-for="(sugerencia, index) in sugerenciasPorCampo.observacionItem1.slice(0, 3)" :key="index"
+                          @click="seleccionarSugerencia(sugerencia, 'observacionItem1')">
+                          {{ sugerencia }}
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <!-- Ítem 2 -->
+                <div class="row">
+                  <div class="col-md-5 col-sm-12">
+                    <label for="item2" class="form-label"><strong>El E.S tiene actualizado y publicado en un lugar
+                        visible...</strong></label>
+                  </div>
+                  <div class="col-md-2 col-sm-12">
+                    <select v-model="item2" class="form-select" required>
+                      <option value="SI">SI</option>
+                      <option value="NO">NO</option>
+                      <option value="NO APLICA">NO APLICA</option>
+                    </select>
+                  </div>
+                  <div class="col-md-5 col-sm-12">
+                    <input type="text" class="form-control ms-2" v-model="observacionItem2"
+                      @input="filtrarSugerencias('observacionItem2')" placeholder="Observaciones" required />
+                    <small class="form-text text-muted">Se evidencia que está actualizado y publicado en un lugar
+                      visible.</small>
+                    <div v-if="sugerenciasPorCampo.observacionItem2.length > 0" class="sugerencias">
+                      <ul>
+                        <li v-for="(sugerencia, index) in sugerenciasPorCampo.observacionItem2.slice(0, 3)" :key="index"
+                          @click="seleccionarSugerencia(sugerencia, 'observacionItem2')">
+                          {{ sugerencia }}
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <h3><strong>ORGANIZACIÓN 2</strong></h3>
+                </div>
+                <hr>   
+                <!-- Ítem 1 -->
+                <div class="row">
+                  <div class="col-md-5 col-sm-12">
+                    <label for="item1" class="form-label"><strong>El Jefe del E.S organiza sus servicios de
+                        salud...</strong></label>
+                  </div>
+                  <div class="col-md-2 col-sm-12">
+                    <select v-model="item1" class="form-select" required>
+                      <option value="SI">SI</option>
+                      <option value="NO">NO</option>
+                      <option value="NO APLICA">NO APLICA</option>
+                    </select>
+                  </div>
+                  <div class="col-md-5 col-sm-12" style="position: relative;">
+                    <input type="text" class="form-control ms-2" v-model="observacionItem3"
+                      @input="filtrarSugerencias('observacionItem3')" placeholder="Observaciones" required />
+                    <small class="form-text text-muted">Se evidencia que si tiene plan de actividades y el responsable
+                      está activo.</small>
+                    <div v-if="sugerenciasPorCampo.observacionItem3.length > 0" class="sugerencias">
+                      <ul>
+                        <li v-for="(sugerencia, index) in sugerenciasPorCampo.observacionItem3.slice(0, 3)" :key="index"
+                          @click="seleccionarSugerencia(sugerencia, 'observacionItem3')">
+                          {{ sugerencia }}
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <!-- Ítem 2 -->
+                <div class="row">
+                  <div class="col-md-5 col-sm-12">
+                    <label for="item2" class="form-label"><strong>El E.S tiene actualizado y publicado en un lugar
+                        visible...</strong></label>
+                  </div>
+                  <div class="col-md-2 col-sm-12">
+                    <select v-model="item2" class="form-select" required>
+                      <option value="SI">SI</option>
+                      <option value="NO">NO</option>
+                      <option value="NO APLICA">NO APLICA</option>
+                    </select>
+                  </div>
+                  <div class="col-md-5 col-sm-12">
+                    <input type="text" class="form-control ms-2" v-model="observacionItem4"
+                      @input="filtrarSugerencias('observacionItem4')" placeholder="Observaciones" required />
+                    <small class="form-text text-muted">Se evidencia que está actualizado y publicado en un lugar
+                      visible.</small>
+                    <div v-if="sugerenciasPorCampo.observacionItem4.length > 0" class="sugerencias">
+                      <ul>
+                        <li v-for="(sugerencia, index) in sugerenciasPorCampo.observacionItem4.slice(0, 3)" :key="index"
+                          @click="seleccionarSugerencia(sugerencia, 'observacionItem4')">
+                          {{ sugerencia }}
+                        </li>
+                      </ul>
+                    </div>
+                  </div> 
+                  </div>       
               </div>
             </div>
           </div>
-        </div>
+
+          <!-- Botón de guardar -->
+          <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+          </div>
+        </form>
       </div>
     </div>
-
-  </main>
-  <footer class="footer">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-6">
-          <p class="mb-0">&copy; {{ currentYear }} - Desarrollado por el área de TI de la DGOS</p>
-        </div>
-        <div class="col-md-6 text-right">
-          <p class="mb-0">Tecnologías utilizadas:
-            <span class="me-2 badge bg-primary text-light"><i class="fab fa-python me-2"></i> Python</span>
-            <span class="me-2 badge bg-secondary text-light"><i class="fab fa-python me-2"></i> Django</span>
-            <span class="me-2 badge bg-info text-light"><i class="fas fa-layer-group me-2"></i> REST API</span>
-            <span class="me-2 badge bg-success text-light"><i class="fab fa-js me-2"></i> Vue.js</span>
-            <span class="me-2 badge bg-warning text-dark"><i class="fas fa-database me-2"></i> SQL Server</span>
-          </p>
-        </div>
-      </div>
-    </div>
-  </footer>
-
+  </div>
 </template>
 
+
 <script setup>
-const currentYear = new Date().getFullYear();
+import { ref, onMounted, onBeforeUnmount } from "vue";
+
+// Definir las variables observación de los ítems
+const observacionItem1 = ref("");
+const observacionItem2 = ref("");
+const observacionItem3 = ref("");
+const observacionItem4 = ref("");
+const observacionItem5 = ref("");
+// Variable para la hora de atención
+const hora_atencion = ref("");
+// Sugerencias por campo
+const sugerenciasPorCampo = ref({
+  observacionItem1: [],
+  observacionItem2: [],
+  observacionItem3: [],
+  observacionItem4: [],
+  observacionItem5: []
+});
+
+// Método para filtrar sugerencias basado en el texto de la observación
+const filtrarSugerencias = (campo) => {
+  const texto = campo === 'observacionItem1' ? observacionItem1.value :
+    campo === 'observacionItem2' ? observacionItem2.value :
+    campo === 'observacionItem3' ? observacionItem3.value :
+    campo === 'observacionItem4' ? observacionItem4.value :
+    observacionItem5.value;
+
+  sugerenciasPorCampo.value[campo] = obtenerSugerencias(texto);
+};
+
+
+// Función para obtener sugerencias (puede ser personalizada)
+const obtenerSugerencias = (texto) => {
+  const listaDeSugerencias = [
+    "Plan de contingencia aprobado.",
+    "Plan de respuesta en desarrollo.",
+    "Estrategia de dengue en ejecución.",
+    "Material educativo disponible.",
+    "Se tiene personal capacitado."
+  ];
+
+  return listaDeSugerencias.filter(sugerencia =>
+    sugerencia.toLowerCase().includes(texto.toLowerCase())
+  );
+};
+
+// Método para seleccionar una sugerencia y autocompletar la observación
+const seleccionarSugerencia = (sugerencia, campo) => {
+  if (campo === "observacionItem1") {
+    observacionItem1.value = sugerencia;
+  } else if (campo === "observacionItem2") {
+    observacionItem2.value = sugerencia;
+  } else if (campo === "observacionItem3") {
+    observacionItem3.value = sugerencia;
+  }else if (campo === "observacionItem4") {
+    observacionItem4.value = sugerencia;
+  }else if (campo === "observacionItem5") {
+    observacionItem5.value = sugerencia;
+  }
+
+  // Vaciar las sugerencias después de hacer clic
+  sugerenciasPorCampo.value[campo] = [];
+};
+
+// Función para obtener la fecha y hora actual en formato adecuado
+const obtenerFechaYHora = () => {
+  const fecha = new Date();
+  const opciones = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+  return fecha.toLocaleString('es-PE', opciones);
+};
+
+// Asignar la fecha y hora actual al cargar el componente
+onMounted(() => {
+  hora_atencion.value = obtenerFechaYHora();
+
+  // Agregar el evento para detectar clics fuera de las sugerencias
+  document.addEventListener('mousedown', handleClickOutside);
+});
+
+// Función para detectar clic fuera de las sugerencias
+const handleClickOutside = (event) => {
+  const sugerenciasElement = document.querySelector('.sugerencias');
+  if (sugerenciasElement && !sugerenciasElement.contains(event.target)) {
+    // Si el clic es fuera de las sugerencias, vaciarlas
+    sugerenciasPorCampo.value.observacionItem1 = [];
+    sugerenciasPorCampo.value.observacionItem2 = [];
+    sugerenciasPorCampo.value.observacionItem3 = [];
+    sugerenciasPorCampo.value.observacionItem4 = [];
+    sugerenciasPorCampo.value.observacionItem5 = [];
+  }
+};
+
+// Limpiar el listener al desmontar el componente
+onBeforeUnmount(() => {
+  document.removeEventListener('mousedown', handleClickOutside);
+});
+
+// Guardar los datos
+const guardarDatos = () => {
+  console.log("Datos guardados:", hora_atencion.value);
+};
 
 </script>
 
+
+
 <style scoped>
-.bg-header {
-  background-color: #083758;
-}
-
-header {
+/* Estilo para que las sugerencias se muestren como un cuadro flotante */
+.sugerencias {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   width: 100%;
+  max-height: 150px;
+  /* Limita la altura */
+  overflow-y: auto;
+  /* Agrega scroll si hay más sugerencias */
+  z-index: 999;
 }
 
-.card-title {
-  font-family: 'Roboto', sans-serif;
-  font-size: 0.9rem;
+.sugerencias ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-.card-text {
-  font-family: 'Lato', sans-serif;
-  color: #867d7d;
-  font-size: 0.7rem;
-  /* Tamaño más pequeño para el texto */
+.sugerencias li {
+  padding: 8px;
+  cursor: pointer;
 }
 
-.btn-lg {
-  transition: all 0.3s ease-in-out;
-}
-
-.btn-lg:hover {
-  background-color: #0a9f58;
-  transform: translateY(-3px);
-}
-
-main {
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-}
-
-/* Fondo con degradado suave */
-.header-background {
-  background: linear-gradient(135deg, #6a9ac4, #3d6d9a);
-  padding: 1rem 1rem;
-  color: #ffffff;
-  border-radius: 10px;
-}
-
-/* Estilos para el título principal */
-.header-background h1 {
-  font-family: 'Georgia', serif;
-  font-weight: 700;
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
-}
-
-/* Estilos para el subtítulo */
-.header-background p {
-  font-family: 'Arial', sans-serif;
-  font-size: 1.2rem;
-  color: #e0e0e0;
-  font-weight: 300;
-  margin-bottom: 0;
-}
-
-/* Línea divisoria decorativa */
-.decorative-line {
-  width: 60px;
-  height: 3px;
-  background-color: #ffffff;
-  margin: 0.5rem auto;
-  border-radius: 5px;
-}
-
-.per-img {
-  filter: drop-shadow(10px 5px 10px rgb(168, 162, 151))
+.sugerencias li:hover {
+  background-color: #f0f0f0;
 }
 </style>
