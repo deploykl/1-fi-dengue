@@ -15,11 +15,6 @@
                 <h3><strong>Monitor</strong></h3>
               </div>
               <div class="col-md-4 col-sm-12">
-                <label for="titulo" class="form-label"><strong>Título:</strong></label>
-                <input type="text" class="form-control" id="titulo" v-model="titulo" placeholder="Ingrese el título"
-                  required>
-              </div>
-              <div class="col-md-4 col-sm-12">
                 <label for="nombre" class="form-label"><strong>Nombre:</strong></label>
                 <input type="text" class="form-control" id="nombre" v-model="nombre" placeholder="Ingrese su nombre"
                   required>
@@ -28,6 +23,11 @@
                 <label for="usuario" class="form-label"><strong>Usuario:</strong></label>
                 <input type="text" class="form-control" id="usuario" v-model="usuario" placeholder="Ingrese su usuario"
                   required>
+              </div>
+              <div class="col-md-4 col-sm-12">
+                <label for="hora_atencion" class="form-label"><strong>Fecha:</strong></label>
+                <input type="text" class="form-control" id="hora_atencion" v-model="hora_atencion"
+                  placeholder="Fecha y hora de atención" readonly required>
               </div>
             </div>
 
@@ -59,14 +59,14 @@
                   placeholder="Ingrese Diresa/Geresa/Diris" required>
               </div>
               <div class="col-md-4 col-sm-12">
-                <label for="hora_atencion" class="form-label"><strong>Hora de Atención:</strong></label>
-                <input type="text" class="form-control" id="hora_atencion" v-model="hora_atencion"
-                  placeholder="Fecha y hora de atención" readonly required>
+                <label for="formato_hora" class="form-label"><strong>Horario de atención:</strong></label>
+                <select id="formato_hora" name="formato_hora" class="form-select">
+                  <option value="12horas">12 horas</option>
+                  <option value="24horas">24 horas</option>
+                </select>
               </div>
             </div>
-
             <hr>
-
             <!-- Ítems -->
             <div class="row">
               <div class="row">
@@ -74,7 +74,6 @@
                   <h3><strong>ORGANIZACIÓN DE LA ATENCION DEL ESTABLECIMIENTO DE SALUD: ASPECTOS GENERALES</strong></h3>
                 </div>
                 <hr>
-
                 <!-- Ítem 1 -->
                 <div class="row">
                   <div class="col-md-5 col-sm-12">
@@ -112,6 +111,7 @@
                   </div>
                   <div class="col-md-2 col-sm-12">
                     <select v-model="item2" class="form-select" required>
+                      <option value="" disabled selected>Seleccione una opción</option>
                       <option value="SI">SI</option>
                       <option value="NO">NO</option>
                       <option value="NO APLICA">NO APLICA</option>
@@ -135,7 +135,7 @@
                 <div class="col-md-12">
                   <h3><strong>ORGANIZACIÓN 2</strong></h3>
                 </div>
-                <hr>   
+                <hr>
                 <!-- Ítem 1 -->
                 <div class="row">
                   <div class="col-md-5 col-sm-12">
@@ -143,7 +143,8 @@
                         salud...</strong></label>
                   </div>
                   <div class="col-md-2 col-sm-12">
-                    <select v-model="item1" class="form-select" required>
+                    <select v-model="item2" class="form-select" required>
+                      <option value="" disabled selected>Seleccione una opción</option>
                       <option value="SI">SI</option>
                       <option value="NO">NO</option>
                       <option value="NO APLICA">NO APLICA</option>
@@ -173,6 +174,7 @@
                   </div>
                   <div class="col-md-2 col-sm-12">
                     <select v-model="item2" class="form-select" required>
+                      <option value="" disabled selected>Seleccione una opción</option>
                       <option value="SI">SI</option>
                       <option value="NO">NO</option>
                       <option value="NO APLICA">NO APLICA</option>
@@ -191,12 +193,11 @@
                         </li>
                       </ul>
                     </div>
-                  </div> 
-                  </div>       
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-
           <!-- Botón de guardar -->
           <div class="text-center mt-4">
             <button type="submit" class="btn btn-primary">Guardar</button>
@@ -232,9 +233,9 @@ const sugerenciasPorCampo = ref({
 const filtrarSugerencias = (campo) => {
   const texto = campo === 'observacionItem1' ? observacionItem1.value :
     campo === 'observacionItem2' ? observacionItem2.value :
-    campo === 'observacionItem3' ? observacionItem3.value :
-    campo === 'observacionItem4' ? observacionItem4.value :
-    observacionItem5.value;
+      campo === 'observacionItem3' ? observacionItem3.value :
+        campo === 'observacionItem4' ? observacionItem4.value :
+          observacionItem5.value;
 
   sugerenciasPorCampo.value[campo] = obtenerSugerencias(texto);
 };
@@ -263,9 +264,9 @@ const seleccionarSugerencia = (sugerencia, campo) => {
     observacionItem2.value = sugerencia;
   } else if (campo === "observacionItem3") {
     observacionItem3.value = sugerencia;
-  }else if (campo === "observacionItem4") {
+  } else if (campo === "observacionItem4") {
     observacionItem4.value = sugerencia;
-  }else if (campo === "observacionItem5") {
+  } else if (campo === "observacionItem5") {
     observacionItem5.value = sugerencia;
   }
 
