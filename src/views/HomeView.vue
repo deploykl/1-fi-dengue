@@ -15,13 +15,25 @@
                 <h3><strong>Monitor</strong></h3>
               </div>
               <div class="col-md-4 col-sm-12">
+                <label for="usuario" class="form-label"><strong>Usuario:</strong></label>
+                <v-select 
+  v-model="usuario"
+  :options="filteredUsuarios"
+  label="username"
+  placeholder="Escriba para buscar un usuario"
+  :filterable="false"
+  :searchable="true"
+  required
+  @search="handleSearch"
+/>
+
+
+
+              </div>
+
+              <div class="col-md-4 col-sm-12">
                 <label for="nombre" class="form-label"><strong>Nombre:</strong></label>
                 <input type="text" class="form-control" id="nombre" v-model="nombre" placeholder="Ingrese su nombre"
-                  required>
-              </div>
-              <div class="col-md-4 col-sm-12">
-                <label for="usuario" class="form-label"><strong>Usuario:</strong></label>
-                <input type="text" class="form-control" id="usuario" v-model="usuario" placeholder="Ingrese su usuario"
                   required>
               </div>
               <div class="col-md-4 col-sm-12">
@@ -196,32 +208,27 @@
                   </div>
                 </div>
                 <div class="row">
-    <div class="col-md-12">
-      <h3><strong>Captura de Imágenes</strong></h3>
-    </div>
-    <div class="col-md-4 col-sm-12">
-      <label for="foto" class="form-label"><strong>Subir imágenes:</strong></label>
-      <input 
-        type="file" 
-        class="form-control" 
-        id="foto" 
-        multiple 
-        @change="capturarFotos" 
-        accept="image/*" 
-        capture>
-    </div>
-    <div class="col-md-12 mt-3">
-      <div v-if="imagenes.length > 0">
-        <h5>Vista previa:</h5>
-        <div class="d-flex flex-wrap">
-          <div v-for="(img, index) in imagenes" :key="index" class="m-2 position-relative">
-            <img :src="img" class="img-thumbnail" width="150">
-            <button class="btn btn-danger btn-sm position-absolute top-0 end-0" @click="eliminarFoto(index)">X</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+                  <div class="col-md-12">
+                    <h3><strong>Captura de Imágenes</strong></h3>
+                  </div>
+                  <div class="col-md-4 col-sm-12">
+                    <label for="foto" class="form-label"><strong>Subir imágenes:</strong></label>
+                    <input type="file" class="form-control" id="foto" multiple @change="capturarFotos" accept="image/*"
+                      capture>
+                  </div>
+                  <div class="col-md-12 mt-3">
+                    <div v-if="imagenes.length > 0">
+                      <h5>Vista previa:</h5>
+                      <div class="d-flex flex-wrap">
+                        <div v-for="(img, index) in imagenes" :key="index" class="m-2 position-relative">
+                          <img :src="img" class="img-thumbnail" width="150">
+                          <button class="btn btn-danger btn-sm position-absolute top-0 end-0"
+                            @click="eliminarFoto(index)">X</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
               </div>
             </div>
@@ -234,11 +241,31 @@
       </div>
     </div>
   </div>
+  <!-- Lista de usuarios -->
+  <div>
+    <h2>Usuarios</h2>
+    <ul>
+      <li v-for="usuario in usuarios" :key="usuario.id">
+        {{ usuario.first_name }} - {{ usuario.email }} - {{ usuario.username }}
+      </li>
+    </ul>
+  </div>
 </template>
 
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from "vue";
+import { api, getAuthToken } from '@/services/auth_axios';
+import * as bootstrap from 'bootstrap';
+import { SwalSuccess, SwalWarning, SwalDelete, SwalUpdate } from '@/components/SwalComponent.vue';
+import VSelect from 'vue-select';
+
+
+//okey
+const usuarios = ref([]); // Declaración correcta de usuarios
+const usuario = ref(''); // Variable para el campo de usuario
+const filteredUsuarios = ref([]); // 🔹 ¡Asegúrate de que está definido aquí!
+
 
 // Definir las variables observación de los ítems
 const observacionItem1 = ref("");
@@ -311,14 +338,6 @@ const obtenerFechaYHora = () => {
   return fecha.toLocaleString('es-PE', opciones);
 };
 
-// Asignar la fecha y hora actual al cargar el componente
-onMounted(() => {
-  hora_atencion.value = obtenerFechaYHora();
-
-  // Agregar el evento para detectar clics fuera de las sugerencias
-  document.addEventListener('mousedown', handleClickOutside);
-});
-
 // Función para detectar clic fuera de las sugerencias
 const handleClickOutside = (event) => {
   const sugerenciasElement = document.querySelector('.sugerencias');
@@ -346,7 +365,7 @@ const guardarDatos = () => {
 // Método para capturar fotos
 const capturarFotos = (event) => {
   const files = Array.from(event.target.files);
-  
+
   // Limitar a 5 imágenes
   if (imagenes.value.length + files.length > 5) {
     alert("Solo puedes subir hasta 5 imágenes.");
@@ -365,6 +384,38 @@ const capturarFotos = (event) => {
 // Método para eliminar una foto
 const eliminarFoto = (index) => {
   imagenes.value.splice(index, 1);
+};
+
+//MAIN FIRMES
+// Obtener usuarios
+// Función para obtener usuarios desde la API
+const fetchUsuarios = async () => {
+  try {
+    const response = await api.get('user/usuario/');
+    usuarios.value = response.data; // Asigna los usuarios al array
+  } catch (error) {
+    console.error('Error fetching usuarios:', error);
+  }
+};
+
+// Inicialización
+onMounted(() => {
+  hora_atencion.value = obtenerFechaYHora();
+  fetchUsuarios();
+  document.addEventListener('mousedown', handleClickOutside);
+});
+
+
+
+// Filtrar solo cuando se escribe algo
+const handleSearch = (searchText) => {
+  if (searchText.length > 0) {
+    filteredUsuarios.value = usuarios.value.filter(user =>
+      user.username && user.username.toLowerCase().includes(searchText.toLowerCase())
+    );
+  } else {
+    filteredUsuarios.value = [];
+  }
 };
 </script>
 
