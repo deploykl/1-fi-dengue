@@ -195,6 +195,34 @@
                     </div>
                   </div>
                 </div>
+                <div class="row">
+    <div class="col-md-12">
+      <h3><strong>Captura de Imágenes</strong></h3>
+    </div>
+    <div class="col-md-4 col-sm-12">
+      <label for="foto" class="form-label"><strong>Subir imágenes:</strong></label>
+      <input 
+        type="file" 
+        class="form-control" 
+        id="foto" 
+        multiple 
+        @change="capturarFotos" 
+        accept="image/*" 
+        capture>
+    </div>
+    <div class="col-md-12 mt-3">
+      <div v-if="imagenes.length > 0">
+        <h5>Vista previa:</h5>
+        <div class="d-flex flex-wrap">
+          <div v-for="(img, index) in imagenes" :key="index" class="m-2 position-relative">
+            <img :src="img" class="img-thumbnail" width="150">
+            <button class="btn btn-danger btn-sm position-absolute top-0 end-0" @click="eliminarFoto(index)">X</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
               </div>
             </div>
           </div>
@@ -220,6 +248,8 @@ const observacionItem4 = ref("");
 const observacionItem5 = ref("");
 // Variable para la hora de atención
 const hora_atencion = ref("");
+const imagenes = ref([]); // Crear una referencia para las imágenes
+
 // Sugerencias por campo
 const sugerenciasPorCampo = ref({
   observacionItem1: [],
@@ -312,12 +342,41 @@ const guardarDatos = () => {
   console.log("Datos guardados:", hora_atencion.value);
 };
 
+// Método para capturar fotos
+// Método para capturar fotos
+const capturarFotos = (event) => {
+  const files = Array.from(event.target.files);
+  
+  // Limitar a 5 imágenes
+  if (imagenes.value.length + files.length > 5) {
+    alert("Solo puedes subir hasta 5 imágenes.");
+    return;
+  }
+
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      imagenes.value.push(e.target.result);
+    };
+    reader.readAsDataURL(file);
+  });
+};
+
+// Método para eliminar una foto
+const eliminarFoto = (index) => {
+  imagenes.value.splice(index, 1);
+};
 </script>
 
 
 
 <style scoped>
 /* Estilo para que las sugerencias se muestren como un cuadro flotante */
+.img-thumbnail {
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
 .sugerencias {
   position: absolute;
   background-color: white;
