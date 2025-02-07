@@ -14,29 +14,31 @@
               <div class="col-md-12">
                 <h3><strong>Monitor</strong></h3>
               </div>
-              <div class="col-md-4 col-sm-12">
+              <div class="col-md-3 col-sm-12">
                 <label for="usuario" class="form-label"><strong>Usuario:</strong></label>
                 <v-select 
-  v-model="usuario"
-  :options="filteredUsuarios"
-  label="username"
-  placeholder="Escriba para buscar un usuario"
-  :filterable="false"
-  :searchable="true"
-  required
-  @search="handleSearch"
-/>
-
-
+                    v-model="usuario"
+                    :options="filteredUsuarios"
+                    label="username"
+                    placeholder="Escriba para buscar un usuario"
+                    :filterable="false"
+                    :searchable="true"
+                    required
+                    @search="handleSearch"
+                    :no-options-text="'No hay opciones disponibles'"
+                    />
 
               </div>
 
-              <div class="col-md-4 col-sm-12">
+              <div class="col-md-3 col-sm-12">
                 <label for="nombre" class="form-label"><strong>Nombre:</strong></label>
-                <input type="text" class="form-control" id="nombre" v-model="nombre" placeholder="Ingrese su nombre"
-                  required>
+                <input type="text" class="form-control" id="nombre" v-model="nombre" placeholder="Ingrese su nombre" required>
               </div>
-              <div class="col-md-4 col-sm-12">
+              <div class="col-md-3 col-sm-12">
+                <label for="email" class="form-label"><strong>Email:</strong></label>
+                <input type="text" class="form-control" id="email" v-model="email" placeholder="Ingrese su correo" required>
+              </div>
+              <div class="col-md-3 col-sm-12">
                 <label for="hora_atencion" class="form-label"><strong>Fecha:</strong></label>
                 <input type="text" class="form-control" id="hora_atencion" v-model="hora_atencion"
                   placeholder="Fecha y hora de atención" readonly required>
@@ -254,7 +256,7 @@
 
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from "vue";
+import { ref, onMounted, onBeforeUnmount, watch  } from "vue";
 import { api, getAuthToken } from '@/services/auth_axios';
 import * as bootstrap from 'bootstrap';
 import { SwalSuccess, SwalWarning, SwalDelete, SwalUpdate } from '@/components/SwalComponent.vue';
@@ -265,6 +267,8 @@ import VSelect from 'vue-select';
 const usuarios = ref([]); // Declaración correcta de usuarios
 const usuario = ref(''); // Variable para el campo de usuario
 const filteredUsuarios = ref([]); // 🔹 ¡Asegúrate de que está definido aquí!
+const nombre = ref(""); // Asegúrate de definir nombre como ref
+const email = ref(""); // Asegúrate de definir nombre como ref
 
 
 // Definir las variables observación de los ítems
@@ -404,12 +408,24 @@ onMounted(() => {
   fetchUsuarios();
   document.addEventListener('mousedown', handleClickOutside);
 });
+// Observar cambios en el usuario seleccionado
+watch(usuario, (newVal) => {
+  if (newVal) {
+    // Si se selecciona un usuario, actualiza el campo "nombre"
+    nombre.value = `${newVal.first_name} ${newVal.last_name}`;
+    email.value = `${newVal.email} `;
+  } else {
+    // Si no hay usuario seleccionado, limpia el campo "nombre"
+    nombre.value = "";
+    email.value = "";
+  }
+});
 
 
 
 // Filtrar solo cuando se escribe algo
 const handleSearch = (searchText) => {
-  if (searchText.length > 0) {
+  if (searchText.length > 1) {
     filteredUsuarios.value = usuarios.value.filter(user =>
       user.username && user.username.toLowerCase().includes(searchText.toLowerCase())
     );
