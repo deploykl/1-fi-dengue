@@ -16,27 +16,20 @@
               </div>
               <div class="col-md-3 col-sm-12">
                 <label for="usuario" class="form-label"><strong>Usuario:</strong></label>
-                <v-select 
-                    v-model="usuario"
-                    :options="filteredUsuarios"
-                    label="username"
-                    placeholder="Escriba para buscar un usuario"
-                    :filterable="false"
-                    :searchable="true"
-                    required
-                    @search="handleSearch"
-                    :no-options-text="'No hay opciones disponibles'"
-                    />
-
+                <v-select v-model="usuario" :options="filteredUsuarios" label="username"
+                  placeholder="Escriba para buscar un usuario" :filterable="false" :searchable="true" required
+                  @search="handleSearch" :no-options-text="'No hay opciones disponibles'" />
               </div>
 
               <div class="col-md-3 col-sm-12">
                 <label for="nombre" class="form-label"><strong>Nombre:</strong></label>
-                <input type="text" class="form-control" id="nombre" v-model="nombre" placeholder="Ingrese su nombre" required>
+                <input type="text" class="form-control" id="nombre" v-model="nombre" placeholder="Ingrese su nombre"
+                  required>
               </div>
               <div class="col-md-3 col-sm-12">
                 <label for="email" class="form-label"><strong>Email:</strong></label>
-                <input type="text" class="form-control" id="email" v-model="email" placeholder="Ingrese su correo" required>
+                <input type="text" class="form-control" id="email" v-model="email" placeholder="Ingrese su correo"
+                  required>
               </div>
               <div class="col-md-3 col-sm-12">
                 <label for="hora_atencion" class="form-label"><strong>Fecha:</strong></label>
@@ -52,11 +45,12 @@
               <div class="col-md-12">
                 <h3><strong>Establecimiento</strong></h3>
               </div>
-              <div class="col-md-4 col-sm-12">
-                <label for="ipress" class="form-label"><strong>IPRESS:</strong></label>
-                <input type="text" class="form-control" id="ipress" v-model="ipress"
-                  placeholder="Ingrese el nombre de la IPRESS" required>
-              </div>
+              <v-select v-model="ipressData" :options="filteredEstablecimientos" label="label"
+                placeholder="Escriba un establecimiento" :filterable="false" :searchable="true" required
+                @search="handleSearchEstablecimientos" :no-options-text="'No hay opciones disponibles'" />
+
+
+
               <div class="col-md-4 col-sm-12">
                 <label for="categoria" class="form-label"><strong>Categoría:</strong></label>
                 <input type="text" class="form-control" id="categoria" v-model="categoria"
@@ -69,8 +63,7 @@
               </div>
               <div class="col-md-4 col-sm-12">
                 <label for="diresa" class="form-label"><strong>Diresa/Geresa/Diris:</strong></label>
-                <input type="text" class="form-control" id="diresa" v-model="diresa"
-                  placeholder="Ingrese Diresa/Geresa/Diris" required>
+                <input type="text" class="form-control" id="diresa" placeholder="Ingrese Diresa/Geresa/Diris" required>
               </div>
               <div class="col-md-4 col-sm-12">
                 <label for="formato_hora" class="form-label"><strong>Horario de atención:</strong></label>
@@ -243,20 +236,12 @@
       </div>
     </div>
   </div>
-  <!-- Lista de usuarios -->
-  <div>
-    <h2>Usuarios</h2>
-    <ul>
-      <li v-for="usuario in usuarios" :key="usuario.id">
-        {{ usuario.first_name }} - {{ usuario.email }} - {{ usuario.username }}
-      </li>
-    </ul>
-  </div>
+
 </template>
 
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, watch  } from "vue";
+import { ref, onMounted, onBeforeUnmount, watch } from "vue";
 import { api, getAuthToken } from '@/services/auth_axios';
 import * as bootstrap from 'bootstrap';
 import { SwalSuccess, SwalWarning, SwalDelete, SwalUpdate } from '@/components/SwalComponent.vue';
@@ -269,7 +254,11 @@ const usuario = ref(''); // Variable para el campo de usuario
 const filteredUsuarios = ref([]); // 🔹 ¡Asegúrate de que está definido aquí!
 const nombre = ref(""); // Asegúrate de definir nombre como ref
 const email = ref(""); // Asegúrate de definir nombre como ref
-
+const ipress = ref("");
+const establecimientos = ref([]);
+const filteredEstablecimientos = ref([]);
+const categoria = ref("");
+const codigo = ref("");
 
 // Definir las variables observación de los ítems
 const observacionItem1 = ref("");
@@ -391,21 +380,37 @@ const eliminarFoto = (index) => {
 };
 
 //MAIN FIRMES
-// Obtener usuarios
 // Función para obtener usuarios desde la API
-const fetchUsuarios = async () => {
+const LISTAR = async () => {
   try {
-    const response = await api.get('user/usuario/');
-    usuarios.value = response.data; // Asigna los usuarios al array
+
+    // Ejecutar todas las solicitudes en paralelo
+    const [responseUsuario, responseIpress] = await Promise.all([
+      api.get('user/usuario/'),
+      api.get('ipress/'),
+    ]);
+
+    // Asignar los datos de las respuestas
+    usuarios.value = responseUsuario.data;
+    ipress.value = responseIpress.data;
+
+    // Mapear los datos de la API para Vue Select
+    establecimientos.value = ipress.value.map(ip => ({
+      label: ip.establecimiento, // Esto es lo que se mostrará en el select
+      value: ip.id, // Esto es el valor interno que se seleccionará
+    }));
+    console.log("Establecimientos procesados:"); // Verifica en consola
+
   } catch (error) {
-    console.error('Error fetching usuarios:', error);
+    console.error('Error al obtener los datos:', error.response ? error.response.data : error.message);
   }
 };
+
 
 // Inicialización
 onMounted(() => {
   hora_atencion.value = obtenerFechaYHora();
-  fetchUsuarios();
+  LISTAR();
   document.addEventListener('mousedown', handleClickOutside);
 });
 // Observar cambios en el usuario seleccionado
@@ -422,17 +427,32 @@ watch(usuario, (newVal) => {
 });
 
 
-
 // Filtrar solo cuando se escribe algo
 const handleSearch = (searchText) => {
   if (searchText.length > 1) {
-    filteredUsuarios.value = usuarios.value.filter(user =>
-      user.username && user.username.toLowerCase().includes(searchText.toLowerCase())
-    );
+    filteredUsuarios.value = usuarios.value
+      .filter(user =>
+        user.username && user.username.toLowerCase().includes(searchText.toLowerCase())
+      )
+      .slice(0, 8); // Limitar a los primeros 10 resultados
   } else {
     filteredUsuarios.value = [];
   }
 };
+
+const handleSearchEstablecimientos = (searchText) => {
+  if (searchText.length > 1) {
+    filteredEstablecimientos.value = establecimientos.value
+      .filter(ipress =>
+        ipress.label && ipress.label.toLowerCase().includes(searchText.toLowerCase())
+      )
+      .slice(0, 10); // Limitar a 10 resultados para evitar sobrecarga
+  } else {
+    filteredEstablecimientos.value = [];
+  }
+};
+
+
 </script>
 
 
