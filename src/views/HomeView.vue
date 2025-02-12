@@ -31,6 +31,11 @@
                 <input type="text" class="form-control" id="email" v-model="email" placeholder="Ingrese su correo"
                   required>
               </div>
+              <div class="col-md-3 col-sm-12">
+                <label for="fecha_subida" class="form-label"><strong>Fecha:</strong></label>
+                <input type="text" class="form-control" id="fecha_subida" v-model="fecha_subida"
+                  placeholder="Fecha y hora de atención" readonly required>
+              </div>
             </div>
             <hr>
 
@@ -43,19 +48,19 @@
                 placeholder="Escriba un establecimiento" :filterable="false" :searchable="true" required
                 @search="BuscarIPRESS" :no-options-text="'No hay opciones disponibles'" />
 
-              <div class="col-md-6 col-sm-12">
+              <div class="col-md-4 col-sm-12">
                 <label for="categoria" class="form-label"><strong>Categoría:</strong></label>
                 <input type="text" class="form-control" id="categoria" v-model="categoria" readonly>
               </div>
-              <div class="col-md-6 col-sm-12">
+              <div class="col-md-3 col-sm-12">
                 <label for="codigo" class="form-label"><strong>Código:</strong></label>
                 <input type="text" class="form-control" id="codigo" v-model="codigo" readonly>
               </div>
-              <div class="col-md-4 col-sm-12">
+              <div class="col-md-3 col-sm-12">
                 <label for="disa" class="form-label"><strong>disa/Geresa/Diris:</strong></label>
                 <input type="text" class="form-control" id="disa" v-model="disa" readonly>
               </div>
-              <div class="col-md-4 col-sm-12">
+              <div class="col-md-2 col-sm-12">
                 <label for="formato_hora" class="form-label"><strong>Horario de atención:</strong></label>
                 <select id="formato_hora" name="formato_hora" class="form-select">
                   <option value="12horas">12 horas</option>
@@ -74,7 +79,6 @@
       </div>
     </div>
   </div>
-
 </template>
 
 
@@ -96,6 +100,7 @@ const filteredIpressAPI = ref([]); // 🔹 ¡Asegúrate de que está definido aq
 const usuario = ref(null);
 const nombre = ref("");
 const email = ref("");
+const fecha_subida = ref(""); // ✅ Se inicializa la variable para la fecha
 
 
 const establecimiento = ref(null);
@@ -103,26 +108,39 @@ const categoria = ref("");
 const codigo = ref("");
 const disa = ref("");
 
+
 const LISTAR = async () => {
   try {
-    // Ejecutar todas las solicitudes en paralelo
     const [responseUsuario, responseIpress] = await Promise.all([
       api.get('user/usuario/'),
       api.get('ipress/'),
     ]);
 
-    usuariosAPI.value = responseUsuario.data;
-    ipressAPI.value = responseIpress.data;
-    // Espera 500ms antes de hacer la petición
+    console.log(responseUsuario.data, responseIpress.data);  // 👈 Agrega esto para ver la respuesta en la consola
 
+    usuariosAPI.value = responseUsuario.data || [];  // Asegurar que siempre sea un array
+    ipressAPI.value = responseIpress.data || [];  // Extrae 'results'
   } catch (error) {
     console.error('Error al obtener los datos:', error.response ? error.response.data : error.message);
   }
 };
-// Inicialización
+
+
 onMounted(() => {
+  fecha_subida.value = obtenerFechaHoraActual();
   LISTAR();
 });
+
+
+// Función para formatear el código a 8 dígitos
+const formatCodigo = (codigo) => {
+  return codigo.toString().padStart(8, '0');
+};
+// Función para obtener la fecha y hora actual en formato "YYYY-MM-DD HH:MM:SS"
+const obtenerFechaHoraActual = () => {
+  const ahora = new Date();
+  return ahora.toISOString().slice(0, 19).replace("T", " "); // Formato YYYY-MM-DD HH:MM:SS
+};
 
 watch(usuario, (newVal) => {
   if (newVal) {
@@ -137,7 +155,7 @@ watch(usuario, (newVal) => {
 watch(establecimiento, (newVal) => {
   if (newVal) {
     categoria.value = newVal.categoria;
-    codigo.value = newVal.codigo;
+    codigo.value = formatCodigo(newVal.codigo); // Formatear el código aquí
     disa.value = newVal.disa;
   } else {
     categoria.value = "";
@@ -149,14 +167,13 @@ watch(establecimiento, (newVal) => {
 // Filtrar solo cuando se escribe algo
 const BuscarUSUARIO = (searchText) => {
   if (searchText.length > 1) {
-    filteredUsuariosAPI.value = usuariosAPI.value
-      .filter(user =>
-        user.username && user.username.toLowerCase().includes(searchText.toLowerCase())
-      )
-      .slice(0, 8); // Limitar a los primeros 10 resultados
+    filteredUsuariosAPI.value = usuariosAPI.value.filter(user =>
+      user.username && user.username.toLowerCase().includes(searchText.toLowerCase())
+    ).slice(0, 8);
   } else {
     filteredUsuariosAPI.value = [];
   }
+  console.log("Usuarios filtrados:", filteredUsuariosAPI.value);  // 👈 Verifica si está funcionando
 };
 
 // Filtrar solo cuando se escribe algo
