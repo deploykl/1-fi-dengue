@@ -61,13 +61,49 @@
                 <input type="text" class="form-control" id="disa" v-model="disa" readonly>
               </div>
               <div class="col-md-2 col-sm-12">
-                <label for="formato_hora" class="form-label"><strong>Horario de atención:</strong></label>
-                <select id="formato_hora" name="formato_hora" class="form-select">
+                <label for="horario_atencion" class="form-label"><strong>Horario de atención:</strong></label>
+                <select id="horario_atencion" name="horario_atencion" class="form-select">
                   <option value="12horas">12 horas</option>
                   <option value="24horas">24 horas</option>
                 </select>
               </div>
             </div>
+            <hr>
+            <div class="row">
+              <div class="col-md-12">
+                <ul class="list-group">
+                  <li v-for="punto in puntosAPI" :key="punto.id" class="list-group-item">
+                    <h3>{{ punto.nombre }}</h3>
+                    <div v-if="punto.items.length > 0">
+                      <div v-for="item in punto.items" :key="item.id" class="mb-3">
+                        <div class="row">
+                          <div class="col-md-4 col-sm-12">
+                            <p>{{ item.pregunta }}</p>
+                          </div>
+                          <div class="col-md-4 col-sm-12">
+                            <label class="form-label"><strong>Opciones</strong></label>
+                            <select v-model="item.opciones" class="form-select">
+                              <option :value="true">Sí</option>
+                              <option :value="false">No</option>
+                            </select>
+                          </div>
+                          <div class="col-md-4 col-sm-12">
+                            <label class="form-label"><strong>Observaciones</strong></label>
+                            <small>{{ item.indicaciones }}</small>
+                            <input type="text" v-model="item.observaciones" class="form-control" />
+                          </div>
+                        </div>
+                        <hr>
+                      </div>
+                    </div>
+                    <div v-else>
+                      <p>No hay preguntas registradas para este punto.</p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
             <hr>
 
           </div>
@@ -95,13 +131,14 @@ const usuariosAPI = ref([]); // Declaración correcta de usuariosAPI
 const ipressAPI = ref([]); // Declaración correcta 
 const filteredUsuariosAPI = ref([]); // 🔹 ¡Asegúrate de que está definido aquí!
 const filteredIpressAPI = ref([]); // 🔹 ¡Asegúrate de que está definido aquí!
+const puntosAPI = ref([]); // 🔹 ¡Asegúrate de que está definido aquí!
 
 
 const usuario = ref(null);
 const nombre = ref("");
 const email = ref("");
-const fecha_subida = ref(""); // ✅ Se inicializa la variable para la fecha
-
+const fecha_subida = ref(""); 
+const horario_atencion = ref(""); 
 
 const establecimiento = ref(null);
 const categoria = ref("");
@@ -111,19 +148,20 @@ const disa = ref("");
 
 const LISTAR = async () => {
   try {
-    const [responseUsuario, responseIpress] = await Promise.all([
+    const [responseUsuario, responseIpress, responsePuntos] = await Promise.all([
       api.get('user/usuario/'),
       api.get('ipress/'),
+      api.get('dengue/puntos/'),
     ]);
-
-    console.log(responseUsuario.data, responseIpress.data);  // 👈 Agrega esto para ver la respuesta en la consola
 
     usuariosAPI.value = responseUsuario.data || [];  // Asegurar que siempre sea un array
     ipressAPI.value = responseIpress.data || [];  // Extrae 'results'
+    puntosAPI.value = responsePuntos.data || [];  // Extrae 'results'
   } catch (error) {
     console.error('Error al obtener los datos:', error.response ? error.response.data : error.message);
   }
 };
+
 
 
 onMounted(() => {
@@ -173,7 +211,6 @@ const BuscarUSUARIO = (searchText) => {
   } else {
     filteredUsuariosAPI.value = [];
   }
-  console.log("Usuarios filtrados:", filteredUsuariosAPI.value);  // 👈 Verifica si está funcionando
 };
 
 // Filtrar solo cuando se escribe algo
