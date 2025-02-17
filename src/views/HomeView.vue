@@ -169,6 +169,47 @@ onMounted(() => {
   LISTAR();
 });
 
+const guardarDatos = async () => {
+  try {
+    // Creando los datos de Dengue
+    const dengueData = {
+      nombre: nombre.value,
+      user: usuario.value.username,
+      email: email.value,
+      fecha_subida: fecha_subida.value,
+      establecimiento: establecimiento.value.establecimiento,
+      categoria: categoria.value,
+      codigo: codigo.value,
+      disa: disa.value,
+      horario_atencion: horario_atencion.value,
+    };
+
+    // Guardamos el dengue primero para obtener su ID
+    const response = await api.post('dengue/dengue/', dengueData);
+
+    // Ahora que tenemos el ID del Dengue, creamos las respuestas
+    const respuestasData = puntosAPI.value.flatMap(punto =>
+      punto.items.map(item => ({
+        dengue: response.data.id, // Aquí asignamos el ID del Dengue creado
+        item: item.id,
+        opciones: item.opciones,
+        indicaciones: item.indicaciones,
+        observaciones: item.observaciones,
+      }))
+    );
+
+    // Guardamos las respuestas de Dengue
+    await api.post('dengue/respuestaitem/', respuestasData);
+
+    SwalSuccess('Datos guardados exitosamente');
+  } catch (error) {
+    console.error('Error al guardar los datos:', error.response ? error.response.data : error.message);
+    SwalWarning('Error al guardar los datos');
+  }
+};
+
+
+
 
 // Función para formatear el código a 8 dígitos
 const formatCodigo = (codigo) => {
