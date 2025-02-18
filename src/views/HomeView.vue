@@ -6,7 +6,7 @@
         Datos de Monitoreo
       </div>
       <div class="card-body">
-        <form @submit.prevent="guardarDatos">
+        <form @submit.prevent="ADD">
           <!-- Primera fila -->
           <div class="container">
             <!-- Primer título: Monitor -->
@@ -15,10 +15,11 @@
                 <h3><strong>Monitor</strong></h3>
               </div>
               <div class="col-md-3 col-sm-12">
-                <label for="usuario" class="form-label"><strong>Usuario:</strong></label>
+                <label for="user" class="form-label"><strong>Usuario:</strong></label>
                 <v-select v-model="usuario" :options="filteredUsuariosAPI" label="username"
                   placeholder="Escriba para buscar un usuario" :filterable="false" :searchable="true" required
                   @search="BuscarUSUARIO" :no-options-text="'No hay opciones disponibles'" />
+                  <input type="hidden" v-model="usuario.username" name="user" />
               </div>
 
               <div class="col-md-3 col-sm-12">
@@ -44,10 +45,12 @@
               <div class="col-md-12">
                 <h3><strong>Establecimiento</strong></h3>
               </div>
-              <v-select v-model="establecimiento" :options="filteredIpressAPI" label="establecimiento"
+              <div class="col-md-12 col-sm-12">
+              <v-select v-model="establecimientos" :options="filteredIpressAPI" label="establecimiento"
                 placeholder="Escriba un establecimiento" :filterable="false" :searchable="true" required
                 @search="BuscarIPRESS" :no-options-text="'No hay opciones disponibles'" />
-
+                <input type="text" v-model="establecimiento" name="establecimiento" />
+                </div>
               <div class="col-md-4 col-sm-12">
                 <label for="categoria" class="form-label"><strong>Categoría:</strong></label>
                 <input type="text" class="form-control" id="categoria" v-model="categoria" readonly>
@@ -62,7 +65,7 @@
               </div>
               <div class="col-md-2 col-sm-12">
                 <label for="horario_atencion" class="form-label"><strong>Horario de atención:</strong></label>
-                <select id="horario_atencion" name="horario_atencion" class="form-select">
+                <select id="horario_atencion" name="horario_atencion" class="form-select" v-model="horario_atencion">
                   <option value="12horas">12 horas</option>
                   <option value="24horas">24 horas</option>
                 </select>
@@ -70,40 +73,103 @@
             </div>
             <hr>
             <div class="row">
-              <div class="col-md-12">
-                <ul class="list-group">
-                  <li v-for="punto in puntosAPI" :key="punto.id" class="list-group-item">
-                    <h3>{{ punto.nombre }}</h3>
-                    <div v-if="punto.items.length > 0">
-                      <div v-for="item in punto.items" :key="item.id" class="mb-3">
-                        <div class="row">
-                          <div class="col-md-4 col-sm-12">
-                            <p>{{ item.pregunta }}</p>
-                          </div>
-                          <div class="col-md-4 col-sm-12">
-                            <label class="form-label"><strong>Opciones</strong></label>
-                            <select v-model="item.opciones" class="form-select">
-                              <option :value="true">Sí</option>
-                              <option :value="false">No</option>
-                            </select>
-                          </div>
-                          <div class="col-md-4 col-sm-12">
-                            <label class="form-label"><strong>Observaciones</strong></label>
-                            <small>{{ item.indicaciones }}</small>
-                            <input type="text" v-model="item.observaciones" class="form-control" />
-                          </div>
-                        </div>
-                        <hr>
-                      </div>
-                    </div>
-                    <div v-else>
-                      <p>No hay preguntas registradas para este punto.</p>
-                    </div>
-                  </li>
-                </ul>
+              <div class="col-md-5 col-sm-12">
+                <h5 class="form-label text-center fw-bold text-dark">ITEMS</h5>
+              </div>
+              <div class="col-md-2 col-sm-12">
+                <h5 class="form-label text-center fw-bold text-dark">OPCIONES</h5>
+              </div>
+              <div class="col-md-5 col-sm-12">
+                <h5 class="form-label text-center fw-bold text-dark">OBSERVACIONES</h5>
               </div>
             </div>
 
+            <div class="row">
+              <div class="col-md-12">
+                <h3><strong>ORGANIZACIÓN DE LA ATENCIÓN DEL ESTABLECIMIENTO DE SALUD: ASPECTOS GENERALES</strong></h3>
+                <hr style="border: 2px solid purple;">
+              </div>
+              <div class="col-md-6 col-sm-12">
+                <p class="form-label txt-justify">El Jefe del E.S organiza sus servicios de salud para ver los casos
+                  de dengue y cuenta con plan de contingencia o respuesta para dengue.</p>
+                  <input type="hidden" name="p1_pregunta" id="p1_pregunta">
+              </div>
+              <div class="col-md-2 col-sm-12">
+                <select name="p1_opciones" class="form-select" required>
+                  <option value="SI">SI</option>
+                  <option value="NO">NO</option>
+                  <option value="NO APLICA">NO APLICA</option>
+                </select>
+              </div>
+              <div class="col-md-4 col-sm-12">
+                <textarea class="form-control" id="p1_observaciones" name="p1_observaciones"></textarea>
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-md-6 col-sm-12">
+                <p class="form-label txt-justify">El E.S tiene actualizado y publicado en un lugar visible el flujo de atención de salud para dengue, además de cartera de servicios salud, horarios de atención, rol de programacion de turnos de personal de salud, mapa de flujo de referencia, mapa de actores sociales. NTS N° 037-MINSA/OGDN-V.01. (Flyer relacionado a Dengue).</p>
+              </div>
+              <div class="col-md-2 col-sm-12">
+                <select v-model="item1" class="form-select" required>
+                  <option value="SI">SI</option>
+                  <option value="NO">NO</option>
+                  <option value="NO APLICA">NO APLICA</option>
+                </select>
+              </div>
+              <div class="col-md-4 col-sm-12">
+                <textarea class="form-control" id="disa"></textarea>
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-md-6 col-sm-12">
+                <p class="form-label txt-justify">Frente a una situación de brote o epidemia por dengue el establecimiento de salud sin internamiento implementa un horario de atención maximo de 12 horas de la Unidad de observación para pacientes febriles de dengue para el diagnóstico y tratamiento inicial de los casos de dengue sin signos de alarma, con factores asociados o con signos de alarma.</p>
+              </div>
+              <div class="col-md-2 col-sm-12">
+                <select v-model="item1" class="form-select" required>
+                  <option value="SI">SI</option>
+                  <option value="NO">NO</option>
+                  <option value="NO APLICA">NO APLICA</option>
+                </select>
+              </div>
+              <div class="col-md-4 col-sm-12">
+                <textarea class="form-control" id="disa"></textarea>
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-md-6 col-sm-12">
+                <p class="form-label txt-justify">El personal de salud cumple las precauciones estándar en bioseguridad durante la atención de pacientes con Dengue (Higiene de manos, uso de EPP, limpieza y desinfección de ambientes, limpieza, desinfección y esterilización de materiales y equipos, aislamiento de pacientes, manejo de residuos sólidos y salud ocupacional)
+                  Monitorear el cumplimiento de las precauciones estándar (higiene de manos, uso correcto del equipo de protección personal - EPP, ventilación e iluminación de ambientes, desinfección de superficies y eliminación de desechos) en los E.S y SMA durante la atención de los casos. </p>
+              </div>
+              <div class="col-md-2 col-sm-12">
+                <select v-model="item1" class="form-select" required>
+                  <option value="SI">SI</option>
+                  <option value="NO">NO</option>
+                  <option value="NO APLICA">NO APLICA</option>
+                </select>
+              </div>
+              <div class="col-md-4 col-sm-12">
+                <textarea class="form-control" id="disa"></textarea>
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-md-6 col-sm-12">
+                <p class="form-label txt-justify">El E.S. registra y mantiene actualizado la disponibilidad de camas en los aplicativos establecidos por MINSA.</p>
+              </div>
+              <div class="col-md-2 col-sm-12">
+                <select v-model="item1" class="form-select" required>
+                  <option value="SI">SI</option>
+                  <option value="NO">NO</option>
+                  <option value="NO APLICA">NO APLICA</option>
+                </select>
+              </div>
+              <div class="col-md-4 col-sm-12">
+                <textarea class="form-control" id="disa"></textarea>
+              </div>
+            </div>
             <hr>
 
           </div>
@@ -131,15 +197,16 @@ const usuariosAPI = ref([]); // Declaración correcta de usuariosAPI
 const ipressAPI = ref([]); // Declaración correcta 
 const filteredUsuariosAPI = ref([]); // 🔹 ¡Asegúrate de que está definido aquí!
 const filteredIpressAPI = ref([]); // 🔹 ¡Asegúrate de que está definido aquí!
-const puntosAPI = ref([]); // 🔹 ¡Asegúrate de que está definido aquí!
 
+const usuario = ref("");
+const user = ref(null);     // El valor que se pasará al input oculto
 
-const usuario = ref(null);
 const nombre = ref("");
 const email = ref("");
-const fecha_subida = ref(""); 
-const horario_atencion = ref(""); 
+const fecha_subida = ref("");
+const horario_atencion = ref("");
 
+const establecimientos = ref("");
 const establecimiento = ref(null);
 const categoria = ref("");
 const codigo = ref("");
@@ -148,20 +215,17 @@ const disa = ref("");
 
 const LISTAR = async () => {
   try {
-    const [responseUsuario, responseIpress, responsePuntos] = await Promise.all([
+    const [responseUsuario, responseIpress] = await Promise.all([
       api.get('user/usuario/'),
       api.get('ipress/'),
-      api.get('dengue/puntos/'),
     ]);
 
     usuariosAPI.value = responseUsuario.data || [];  // Asegurar que siempre sea un array
     ipressAPI.value = responseIpress.data || [];  // Extrae 'results'
-    puntosAPI.value = responsePuntos.data || [];  // Extrae 'results'
   } catch (error) {
     console.error('Error al obtener los datos:', error.response ? error.response.data : error.message);
   }
 };
-
 
 
 onMounted(() => {
@@ -169,46 +233,49 @@ onMounted(() => {
   LISTAR();
 });
 
-const guardarDatos = async () => {
+const ADD = async () => {
   try {
-    // Creando los datos de Dengue
-    const dengueData = {
+    const data = {
+      user: user.value, // Aquí ya se enviará el username
       nombre: nombre.value,
-      user: usuario.value.username,
       email: email.value,
       fecha_subida: fecha_subida.value,
-      establecimiento: establecimiento.value.establecimiento,
+      establecimiento: establecimiento.value, // Asegúrate de que sea una cadena
       categoria: categoria.value,
       codigo: codigo.value,
       disa: disa.value,
       horario_atencion: horario_atencion.value,
+      // Agrega más campos según sea necesario
     };
 
-    // Guardamos el dengue primero para obtener su ID
-    const response = await api.post('dengue/dengue/', dengueData);
+    // Enviar la solicitud POST a tu API
+    const response = await api.post('dengue/dengue/', data);
 
-    // Ahora que tenemos el ID del Dengue, creamos las respuestas
-    const respuestasData = puntosAPI.value.flatMap(punto =>
-      punto.items.map(item => ({
-        dengue: response.data.id, // Aquí asignamos el ID del Dengue creado
-        item: item.id,
-        opciones: item.opciones,
-        indicaciones: item.indicaciones,
-        observaciones: item.observaciones,
-      }))
-    );
-
-    // Guardamos las respuestas de Dengue
-    await api.post('dengue/respuestaitem/', respuestasData);
-
-    SwalSuccess('Datos guardados exitosamente');
+    // Manejar la respuesta
+    if (response.status === 201) { // Asegúrate de que el código de éxito sea el correcto
+      SwalSuccess('Registro exitoso', 'Los datos han sido guardados correctamente.');
+      // Limpiar los campos o redirigir según sea necesario
+    } else {
+      SwalWarning('Error', 'No se pudo guardar los datos.');
+    }
   } catch (error) {
-    console.error('Error al guardar los datos:', error.response ? error.response.data : error.message);
-    SwalWarning('Error al guardar los datos');
+    // Capturar y mostrar el error específico
+    if (error.response) {
+      // La solicitud se realizó y el servidor respondió con un código de estado
+      // que no está en el rango de 2xx
+      console.error('Error al registrar:', error.response.data); // Muestra el mensaje de error del servidor
+      SwalWarning('Error', error.response.data.message || 'Ocurrió un error al intentar guardar los datos.');
+    } else if (error.request) {
+      // La solicitud se realizó pero no se recibió respuesta
+      console.error('Error en la solicitud:', error.request);
+      SwalWarning('Error', 'No se recibió respuesta del servidor.');
+    } else {
+      // Algo sucedió al configurar la solicitud que provocó un error
+      console.error('Error:', error.message);
+      SwalWarning('Error', 'Ocurrió un error inesperado.');
+    }
   }
 };
-
-
 
 
 // Función para formatear el código a 8 dígitos
@@ -231,7 +298,7 @@ watch(usuario, (newVal) => {
   }
 });
 
-watch(establecimiento, (newVal) => {
+watch(establecimientos, (newVal) => {
   if (newVal) {
     categoria.value = newVal.categoria;
     codigo.value = formatCodigo(newVal.codigo); // Formatear el código aquí
@@ -266,6 +333,16 @@ const BuscarIPRESS = (searchText) => {
     filteredIpressAPI.value = [];
   }
 };
+// Usamos un watch para actualizar el input oculto cada vez que cambia el valor de 'usuario'
+watch(usuario, (newUsuario) => {
+  console.log('Usuario seleccionado:', newUsuario);
+  user.value = newUsuario ? newUsuario.username : null; // Asignar el username en lugar del id
+});
+
+watch(establecimientos, (newEstablecimiento) => {
+  console.log('establecimiento seleccionado:', newEstablecimiento);
+  establecimiento.value = newEstablecimiento ? newEstablecimiento.establecimiento : null; // Asignar el username en lugar del id
+});
 </script>
 
 
@@ -303,5 +380,8 @@ const BuscarIPRESS = (searchText) => {
 
 .sugerencias li:hover {
   background-color: #f0f0f0;
+}
+.txt-justify{
+  text-align: justify;
 }
 </style>
