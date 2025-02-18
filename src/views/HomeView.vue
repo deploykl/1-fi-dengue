@@ -2,22 +2,33 @@
   <div class="container mt-4">
     <div class="card">
       <!-- Encabezado principal -->
-      <div class="card-header bg-primary text-white mb-3">
-        Datos de Monitoreo
+      <div class="card-header mb-3 text-center">
+        <h2 class="section-title">
+          MONITOREO SOBRE LA ORGANIZACIÓN DE LOS SERVICIOS DE SALUD EN ESTABLECIMIENTOS DEL PRIMER NIVEL DE ATENCIÓN DE
+          SALUD PARA DENGUE
+        </h2>
       </div>
       <div class="card-body">
         <form @submit.prevent="ADD">
           <!-- Primera fila -->
           <div class="container">
+            <div class="circle-container">
+              <div class="circle" :class="{ 'circle-green': camposPendientes === 0 }">
+                <span class="counter" v-if="camposPendientes > 0">{{ camposPendientes }}</span>
+                <span v-else class="check">✔️</span>
+              </div>
+              <p class="text-danger">❗</p>
+            </div>
             <!-- Primer título: Monitor -->
             <div class="row">
               <div class="col-md-12">
-                <h3><strong>Monitor</strong></h3>
+                <h3><strong>DATOS DEL MONITOR</strong></h3>
               </div>
+              <hr>
               <div class="col-md-3 col-sm-12">
                 <label for="user" class="form-label"><strong>Usuario:</strong></label>
                 <v-select v-model="usuario" :options="filteredUsuariosAPI" label="username"
-                  placeholder="Escriba para buscar un usuario" :filterable="false" :searchable="true" required
+                  placeholder="Escriba el usuario" :filterable="false" :searchable="true" required
                   @search="BuscarUSUARIO" :no-options-text="'No hay opciones disponibles'" />
                 <input type="hidden" v-model="usuario.username" name="user" />
               </div>
@@ -39,13 +50,12 @@
               </div>
             </div>
             <hr>
-
             <!-- Segundo título: Establecimiento -->
             <div class="row">
               <div class="col-md-12">
-                <h3><strong>Establecimiento</strong></h3>
+                <h3><strong>ESTABLECIMIENTO</strong></h3>
               </div>
-              <div class="col-md-12 col-sm-12">
+              <div class="col-md-12 col-sm-12 mb-3">
                 <v-select v-model="establecimientos" :options="filteredIpressAPI" label="establecimiento"
                   placeholder="Escriba un establecimiento" :filterable="false" :searchable="true" required
                   @search="BuscarIPRESS" :no-options-text="'No hay opciones disponibles'" />
@@ -60,14 +70,15 @@
                 <input type="text" class="form-control" id="codigo" v-model="codigo" readonly>
               </div>
               <div class="col-md-3 col-sm-12">
-                <label for="disa" class="form-label"><strong>disa/Geresa/Diris:</strong></label>
+                <label for="disa" class="form-label"><strong>Disa/Geresa/Diris:</strong></label>
                 <input type="text" class="form-control" id="disa" v-model="disa" readonly>
               </div>
               <div class="col-md-2 col-sm-12">
                 <label for="horario_atencion" class="form-label"><strong>Horario de atención:</strong></label>
                 <select id="horario_atencion" name="horario_atencion" class="form-select" v-model="horario_atencion">
-                  <option value="12horas">12 horas</option>
-                  <option value="24horas">24 horas</option>
+                  <option value="" disabled selected>Seleccione opción</option>
+                  <option value="12 Horas">12 horas</option>
+                  <option value="24 Horas">24 horas</option>
                 </select>
               </div>
             </div>
@@ -83,26 +94,28 @@
                 <h5 class="form-label text-center fw-bold text-dark">OBSERVACIONES</h5>
               </div>
             </div>
+            <hr>
 
             <div class="row">
               <div class="col-md-12">
-                <h3><strong>ORGANIZACIÓN DE LA ATENCIÓN DEL ESTABLECIMIENTO DE SALUD: ASPECTOS GENERALES</strong></h3>
-                <hr style="border: 2px solid purple;">
+                <h3><strong>ORGANIZACIÓN DE LA ATENCIÓN DEL ESTABLECIMIENTO DE SALUD: ASPECTOS
+                    GENERALES</strong></h3>
+                <hr>
               </div>
-
-              <div class="row" v-for="(pregunta, index) in preguntas" :key="index">
+              <div class="row" v-for="(pregunta, index) in preguntas" :key="index"
+                :class="{ 'fila-completa': pregunta.opcion && pregunta.observacion }">
                 <div class="col-md-6 col-sm-12">
                   <p class="form-label txt-justify" v-text="pregunta.pregunta" style="user-select: none;"></p>
                 </div>
-                <div class="col-md-2 col-sm-12">
-                  <select v-model="pregunta.opcion" class="form-select" required>
+                <div class="col-md-2 col-sm-12 mb-4">
+                  <select v-model="pregunta.opcion" class="form-select">
                     <option value="" disabled selected>Seleccione opción</option>
                     <option value="SI">SI</option>
                     <option value="NO">NO</option>
                     <option value="NO APLICA">NO APLICA</option>
                   </select>
                 </div>
-                <div class="col-md-4 col-sm-12">
+                <div class="col-md-4 col-sm-12 mb-4">
                   <textarea class="form-control" v-model="pregunta.observacion"></textarea>
                 </div>
               </div>
@@ -114,53 +127,299 @@
           <div class="row">
             <div class="col-md-12">
               <h3><strong>ÁREA DE ADMISIÓN/ÁREA DE TRIAJE</strong></h3>
-              <hr style="border: 2px solid yellow;">
+              <hr>
             </div>
 
-            <div class="row" v-for="(pregunta, index) in preguntasTriajeNuevas" :key="index">
+            <div class="row" v-for="(pregunta, index) in preguntasTriajeNuevas" :key="index"
+              :class="{ 'fila-completa': pregunta.opcion && pregunta.observacion }">
               <div class="col-md-6 col-sm-12">
                 <p class="form-label txt-justify" v-text="pregunta.pregunta" style="user-select: none;"></p>
               </div>
-              <div class="col-md-2 col-sm-12">
-                <select v-model="pregunta.opcion" class="form-select" required>
+              <div class="col-md-2 col-sm-12 mb-4">
+                <select v-model="pregunta.opcion" class="form-select">
                   <option value="" disabled selected>Seleccione opción</option>
                   <option value="SI">SI</option>
                   <option value="NO">NO</option>
                   <option value="NO APLICA">NO APLICA</option>
                 </select>
               </div>
-              <div class="col-md-4 col-sm-12">
+              <div class="col-md-4 col-sm-12 mb-4">
                 <textarea class="form-control" v-model="pregunta.observacion"></textarea>
               </div>
             </div>
             <hr>
           </div>
 
-          <!-- Sección Área de Admisión / Área de Triaje -->
+          <!-- Sección AMBIENTE DE TOPICO DE ATENCIÓN Y/O OBSERVACION-->
           <div class="row">
             <div class="col-md-12">
-              <h3><strong>AMBIENTE DE TOPICO DE ATENCIÓN Y/O OBSERVACION</strong></h3>
-              <hr style="border: 2px solid green;">
+              <h3><strong>AMBIENTE DE TOPICO DE ATENCIÓN Y/O OBSERVACIÓN</strong></h3>
+              <hr>
             </div>
 
-            <div class="row" v-for="(pregunta, index) in preguntasAmbiente" :key="index">
+            <div class="row" v-for="(pregunta, index) in preguntasAmbiente" :key="index"
+              :class="{ 'fila-completa': pregunta.opcion && pregunta.observacion }">
               <div class="col-md-6 col-sm-12">
                 <p class="form-label txt-justify" v-text="pregunta.pregunta" style="user-select: none;"></p>
               </div>
-              <div class="col-md-2 col-sm-12">
-                <select v-model="pregunta.opcion" class="form-select" required>
+              <div class="col-md-2 col-sm-12 mb-4">
+                <select v-model="pregunta.opcion" class="form-select">
                   <option value="" disabled selected>Seleccione opción</option>
                   <option value="SI">SI</option>
                   <option value="NO">NO</option>
                   <option value="NO APLICA">NO APLICA</option>
                 </select>
               </div>
-              <div class="col-md-4 col-sm-12">
+              <div class="col-md-4 col-sm-12 mb-4">
                 <textarea class="form-control" v-model="pregunta.observacion"></textarea>
               </div>
             </div>
             <hr>
           </div>
+
+          <!-- Sección UPSS DE CONSULTA EXTERNA-->
+          <div class="row">
+            <div class="col-md-12">
+              <h3><strong>UPSS DE CONSULTA EXTERNA</strong></h3>
+              <hr>
+            </div>
+
+            <div class="row" v-for="(pregunta, index) in preguntasUPSS" :key="index"
+              :class="{ 'fila-completa': pregunta.opcion && pregunta.observacion }">
+              <div class="col-md-6 col-sm-12">
+                <p class="form-label txt-justify" v-text="pregunta.pregunta" style="user-select: none;"></p>
+              </div>
+              <div class="col-md-2 col-sm-12 mb-4">
+                <select v-model="pregunta.opcion" class="form-select">
+                  <option value="" disabled selected>Seleccione opción</option>
+                  <option value="SI">SI</option>
+                  <option value="NO">NO</option>
+                  <option value="NO APLICA">NO APLICA</option>
+                </select>
+              </div>
+              <div class="col-md-4 col-sm-12 mb-4">
+                <textarea class="form-control" v-model="pregunta.observacion"></textarea>
+              </div>
+            </div>
+            <hr>
+          </div>
+
+          <!-- SecciónINTERNAMIENTO -->
+          <div class="row">
+            <div class="col-md-12">
+              <h3><strong>INTERNAMIENTO</strong></h3>
+              <hr>
+            </div>
+
+            <div class="row" v-for="(pregunta, index) in preguntasInternamiento" :key="index"
+              :class="{ 'fila-completa': pregunta.opcion && pregunta.observacion }">
+              <div class="col-md-6 col-sm-12">
+                <p class="form-label txt-justify" v-text="pregunta.pregunta" style="user-select: none;"></p>
+              </div>
+              <div class="col-md-2 col-sm-12 mb-4">
+                <select v-model="pregunta.opcion" class="form-select">
+                  <option value="" disabled selected>Seleccione opción</option>
+                  <option value="SI">SI</option>
+                  <option value="NO">NO</option>
+                  <option value="NO APLICA">NO APLICA</option>
+                </select>
+              </div>
+              <div class="col-md-4 col-sm-12 mb-4">
+                <textarea class="form-control" v-model="pregunta.observacion"></textarea>
+              </div>
+            </div>
+            <hr>
+          </div>
+
+          <!-- UPSS  DE LABORATORIO -->
+          <div class="row">
+            <div class="col-md-12">
+              <h3><strong>UPSS DE LABORATORIO</strong></h3>
+              <hr>
+            </div>
+
+            <div class="row" v-for="(pregunta, index) in PreguntasUPSSLAB" :key="index"
+              :class="{ 'fila-completa': pregunta.opcion && pregunta.observacion }">
+              <div class="col-md-6 col-sm-12">
+                <p class="form-label txt-justify" v-text="pregunta.pregunta" style="user-select: none;"></p>
+              </div>
+              <div class="col-md-2 col-sm-12 mb-4">
+                <select v-model="pregunta.opcion" class="form-select">
+                  <option value="" disabled selected>Seleccione opción</option>
+                  <option value="SI">SI</option>
+                  <option value="NO">NO</option>
+                  <option value="NO APLICA">NO APLICA</option>
+                </select>
+              </div>
+              <div class="col-md-4 col-sm-12 mb-4">
+                <textarea class="form-control" v-model="pregunta.observacion"></textarea>
+              </div>
+            </div>
+            <hr>
+          </div>
+
+          <!-- UPSS FARMACIA -->
+          <div class="row">
+            <div class="col-md-12">
+              <h3><strong>UPSS FARMACIA</strong></h3>
+              <hr>
+            </div>
+
+            <div class="row" v-for="(pregunta, index) in PreguntasUPSSFAR" :key="index"
+              :class="{ 'fila-completa': pregunta.opcion && pregunta.observacion }">
+              <div class="col-md-6 col-sm-12">
+                <p class="form-label txt-justify" v-text="pregunta.pregunta" style="user-select: none;"></p>
+              </div>
+              <div class="col-md-2 col-sm-12 mb-4">
+                <select v-model="pregunta.opcion" class="form-select">
+                  <option value="" disabled selected>Seleccione opción</option>
+                  <option value="SI">SI</option>
+                  <option value="NO">NO</option>
+                  <option value="NO APLICA">NO APLICA</option>
+                </select>
+              </div>
+              <div class="col-md-4 col-sm-12 mb-4">
+                <textarea class="form-control" v-model="pregunta.observacion"></textarea>
+              </div>
+            </div>
+            <hr>
+          </div>
+
+          <!-- EXTENSION DE LA OFERTA:  AMBIENTE DE LA UNIDAD DE VIGILANCIA CLÍNICA (UVICLIN)  -->
+          <div class="row">
+            <div class="col-md-12">
+              <h3><strong>EXTENSION DE LA OFERTA: AMBIENTE DE LA UNIDAD DE VIGILANCIA CLÍNICA (UVICLIN) </strong></h3>
+              <hr>
+            </div>
+
+            <div class="row" v-for="(pregunta, index) in PreguntasUPSSEXT" :key="index"
+              :class="{ 'fila-completa': pregunta.opcion && pregunta.observacion }">
+              <div class="col-md-6 col-sm-12">
+                <p class="form-label txt-justify" v-text="pregunta.pregunta" style="user-select: none;"></p>
+              </div>
+              <div class="col-md-2 col-sm-12 mb-4">
+                <select v-model="pregunta.opcion" class="form-select">
+                  <option value="" disabled selected>Seleccione opción</option>
+                  <option value="SI">SI</option>
+                  <option value="NO">NO</option>
+                  <option value="NO APLICA">NO APLICA</option>
+                </select>
+              </div>
+              <div class="col-md-4 col-sm-12 mb-4">
+                <textarea class="form-control" v-model="pregunta.observacion"></textarea>
+              </div>
+            </div>
+            <hr>
+          </div>
+
+
+          <!-- EXTENSION DE LA OFERTA:  AMBIENTE DE LA UNIDAD DE VIGILANCIA CLÍNICA (UVICLIN)  -->
+          <div class="row">
+            <div class="col-md-12">
+              <h3><strong>DE LA UNIDAD FEBRIL (UF) </strong></h3>
+              <hr>
+            </div>
+
+            <div class="row" v-for="(pregunta, index) in PreguntasFEBRIL" :key="index"
+              :class="{ 'fila-completa': pregunta.opcion && pregunta.observacion }">
+              <div class="col-md-6 col-sm-12">
+                <p class="form-label txt-justify" v-text="pregunta.pregunta" style="user-select: none;"></p>
+              </div>
+              <div class="col-md-2 col-sm-12 mb-4">
+                <select v-model="pregunta.opcion" class="form-select">
+                  <option value="" disabled selected>Seleccione opción</option>
+                  <option value="SI">SI</option>
+                  <option value="NO">NO</option>
+                  <option value="NO APLICA">NO APLICA</option>
+                </select>
+              </div>
+              <div class="col-md-4 col-sm-12 mb-4">
+                <textarea class="form-control" v-model="pregunta.observacion"></textarea>
+              </div>
+            </div>
+            <hr>
+          </div>
+
+          <!-- REFERENCIA Y CONTRARREFERENCIA -->
+          <div class="row mt-4">
+            <div class="col-md-12">
+              <h3><strong>REFERENCIA Y CONTRARREFERENCIA</strong></h3>
+              <hr class="my-3">
+            </div>
+
+            <div class="row" v-for="(pregunta, index) in PreguntasREF" :key="index"
+              :class="{ 'fila-completa': pregunta.opcion && pregunta.observacion }">
+
+              <!-- Pregunta -->
+              <div class="col-md-6 col-sm-12">
+                <p class="form-label txt-justify" v-text="pregunta.pregunta" style="user-select: none;"></p>
+              </div>
+
+              <!-- Opción -->
+              <div class="col-md-3 col-sm-12 mb-4">
+                <select v-model="pregunta.opcion" class="form-select custom-select">
+                  <option value="" disabled selected>Seleccione opción</option>
+                  <option value="SI">SI</option>
+                  <option value="NO">NO</option>
+                  <option value="NO APLICA">NO APLICA</option>
+                </select>
+              </div>
+
+              <!-- Observación -->
+              <div class="col-md-3 col-sm-12 mb-4">
+                <textarea class="form-control custom-textarea" v-model="pregunta.observacion"
+                  placeholder="Observación"></textarea>
+              </div>
+
+            </div>
+            <hr class="my-3">
+          </div>
+
+
+          <!-- OTROS HALLAZGOS -->
+          <div class="row">
+            <div class="col-md-2 col-sm-12">
+              <p class="form-label txt-justify">Otros Hallazgos:</p>
+            </div>
+            <div class="col-md-10 col-sm-12 mb-4">
+              <textarea class="form-control" v-model="otrosHallazgos"></textarea>
+            </div>
+          </div>
+
+          <!-- IMAGENES -->
+          <div class="row">
+            <div class="col-md-12">
+              <h3><strong>SUBIR IMAGENES</strong></h3>
+            </div>
+            <div class="col-md-4 col-sm-12">
+              <input type="file" class="form-control" id="foto" multiple @change="capturarFotos" accept="image/*"
+                capture>
+            </div>
+            <div class="col-md-12 mt-3">
+              <div v-if="imagenes.length > 0">
+                <h5>Vista previa:</h5>
+                <div class="d-flex flex-wrap">
+                  <div v-for="(img, index) in imagenes" :key="index" class="m-2 position-relative">
+                    <img :src="img" class="img-thumbnail" width="150">
+                    <button class="btn btn-danger btn-sm position-absolute top-0 end-0"
+                      @click="eliminarFoto(index)">X</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <hr>
+          <div class="row">
+            <div class="col-md-12 col-sm-12">
+              <small class="form-label txt-justify"> Fuente: <br>
+                *NTS N° 211-MINSA/DGIESP-2024, Norma Técnica de Salud para la atención interal de pacientes con dengue
+                en el Perú, aprobada por Resolución Ministerial N° 175-2024/MINSA.
+                **Protocolo Sanitario de Urgencia: "Organización de Servicios de Salud ante Epidemia de Dengue",
+                aprobada por Resolución Viceministerial N° 012-2016-SA-DVM-SP.</small>
+            </div>
+          </div>
+
           <!-- Botón de guardar -->
           <div class="text-center mt-4">
             <button type="submit" class="btn btn-primary">Guardar</button>
@@ -175,8 +434,7 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, watch } from "vue";
 import { api, getAuthToken } from '@/services/auth_axios';
-import * as bootstrap from 'bootstrap';
-import { SwalSuccess, SwalWarning, SwalDelete, SwalUpdate } from '@/components/SwalComponent.vue';
+import { SwalSuccess, SwalWarning, } from '@/components/SwalComponent.vue';
 import VSelect from 'vue-select';
 import _ from "lodash";
 
@@ -193,6 +451,7 @@ const nombre = ref("");
 const email = ref("");
 const fecha_subida = ref("");
 const horario_atencion = ref("");
+const otrosHallazgos = ref("");
 
 const establecimientos = ref("");
 const establecimiento = ref(null);
@@ -200,7 +459,9 @@ const categoria = ref("");
 const codigo = ref("");
 const disa = ref("");
 
-
+// Estado reactivo para almacenar imágenes seleccionadas y sus vistas previas
+const imagenes = ref([]);
+const imagenesPreview = ref([]);
 const preguntas = ref([
   { pregunta: 'El Jefe del E.S organiza sus servicios de salud para ver los casos de dengue y cuenta con plan de contingencia o respuesta para dengue.', opcion: '', observacion: '' },
   { pregunta: 'El E.S tiene actualizado y publicado en un lugar visible el flujo de atención de salud para dengue, además de cartera de servicios salud, horarios de atención, rol de programacion de turnos de personal de salud, mapa de flujo de referencia, mapa de actores sociales. NTS N° 037-MINSA/OGDN-V.01. (Flyer relacionado a Dengue).', opcion: '', observacion: '' },
@@ -219,18 +480,70 @@ const preguntasTriajeNuevas = ref([
 ]);
 
 const preguntasAmbiente = ref([
-{ pregunta: 'Cuenta con espacio físico acondicionado..', opcion: '', observacion: '' },
-{ pregunta: 'Se realiza: la toma de funciones vitales, detección de casos, diagnóstico clínico e inicio de tratamiento de pacientes con Dengue sin signos de alarma (PLAN A), y para pacientes con comorbilidad o factor de riesgo como gestante, niño, anciano y casos con signos de alarma que requieran observación inicial e inicio de VEV (PLAN B1 o B2). (Utiliza Hoja de monitoreo de pacientes con Dengue) Ver Anexo 1', opcion: '', observacion: '' },
-{ pregunta: 'Cuenta con médico, enfermera u otro profesional de la salud capacitado que realiza la atención de salud de manera continua las 12 o 24 horas (Depende del horario de atención).', opcion: '', observacion: '' },
-{ pregunta: 'Cuenta con capacidad mínima de 2 camas de observación con área mínima de 9 m² por cama, cada cama con su mosquitero.', opcion: '', observacion: '' },
-{ pregunta: 'Asegura el recurso humano (personal profesional y no profesional de la salud para la atención de salud).', opcion: '', observacion: '' },
-{ pregunta: 'Cuenta con equipamiento mínimo según (Anexo 2)', opcion: '', observacion: '' },
-{ pregunta: 'Realiza el control de funciones vitales correctamente y apertura la hoja de monitoreo de casos ( Incluye P.A.M).', opcion: '', observacion: '' },
-{ pregunta: 'Refiere los casos con Dengue (GrupoB1 y B2) que presentan signos de alarma para monitoreo permanente en la Unidad de Vigilancia Clínica (UVICLIN) o refiere a otro E.S. que cuente con UVICLIN.', opcion: '', observacion: '' },
-{ pregunta: 'Asegura la intimidad del paciente con elementos divisorios ( biombo,cortina, mampara, etc)', opcion: '', observacion: '' },
-{ pregunta: 'Cuenta con disponibilidad de productos farmacéuticos y dispositivos médicos  según (Anexo 3)', opcion: '', observacion: '' },
-{ pregunta: 'Verifica el adecuado registro de datos en las ficha de investigación epidemiológica.', opcion: '', observacion: '' },
+  { pregunta: 'Cuenta con espacio físico acondicionado..', opcion: '', observacion: '' },
+  { pregunta: 'Se realiza: la toma de funciones vitales, detección de casos, diagnóstico clínico e inicio de tratamiento de pacientes con Dengue sin signos de alarma (PLAN A), y para pacientes con comorbilidad o factor de riesgo como gestante, niño, anciano y casos con signos de alarma que requieran observación inicial e inicio de VEV (PLAN B1 o B2). (Utiliza Hoja de monitoreo de pacientes con Dengue) Ver Anexo 1', opcion: '', observacion: '' },
+  { pregunta: 'Cuenta con médico, enfermera u otro profesional de la salud capacitado que realiza la atención de salud de manera continua las 12 o 24 horas (Depende del horario de atención).', opcion: '', observacion: '' },
+  { pregunta: 'Cuenta con capacidad mínima de 2 camas de observación con área mínima de 9 m² por cama, cada cama con su mosquitero.', opcion: '', observacion: '' },
+  { pregunta: 'Asegura el recurso humano (personal profesional y no profesional de la salud para la atención de salud).', opcion: '', observacion: '' },
+  { pregunta: 'Cuenta con equipamiento mínimo según (Anexo 2)', opcion: '', observacion: '' },
+  { pregunta: 'Realiza el control de funciones vitales correctamente y apertura la hoja de monitoreo de casos ( Incluye P.A.M).', opcion: '', observacion: '' },
+  { pregunta: 'Refiere los casos con Dengue (GrupoB1 y B2) que presentan signos de alarma para monitoreo permanente en la Unidad de Vigilancia Clínica (UVICLIN) o refiere a otro E.S. que cuente con UVICLIN.', opcion: '', observacion: '' },
+  { pregunta: 'Asegura la intimidad del paciente con elementos divisorios ( biombo,cortina, mampara, etc)', opcion: '', observacion: '' },
+  { pregunta: 'Cuenta con disponibilidad de productos farmacéuticos y dispositivos médicos  según (Anexo 3)', opcion: '', observacion: '' },
+  { pregunta: 'Verifica el adecuado registro de datos en las ficha de investigación epidemiológica.', opcion: '', observacion: '' },
+]);
 
+const preguntasUPSS = ref([
+  { pregunta: 'Cuenta con equipamiento mínimo según (Anexo 2)', opcion: '', observacion: '' },
+  { pregunta: 'El médico está capacitado en la detección oportuna de los casos probables de dengue, los clasifica correctamente e inicia tratamiento precoz de los casos de dengue de acuerdo a la NTS 211-DGIESP/MINSA-2024.', opcion: '', observacion: '' },
+  { pregunta: 'El registro de datos en la H.C. es completo, con letra legible y coloca el diagnóstico correcto del caso de dengue, asi como las indicaciones médicas son claras y precisas, de acuerdo a la NTS 211-DGIESP/MINSA-2024.', opcion: '', observacion: '' },
+  { pregunta: 'Los examenes de laboratorio son solicitados de acuerdo al nivel de complejidad y disponibilidad de oferta del establecimiento de salud, según lo establece la NTS 211-DGIESP/MINSA-2024.', opcion: '', observacion: '' },
+]);
+
+const preguntasInternamiento = ref([
+  { pregunta: 'Cuenta con equipamiento mínimo, incluyendo mosquiteros, según (Anexo 2), para las actividades de salud diarios..', opcion: '', observacion: '' },
+  { pregunta: 'Realiza el registro del tratamiento médico a los pacientes con dengue, según el flujograma de atención de acuerdo de la NTS N° 211-DGIESP/MINSA-2024.', opcion: '', observacion: '' },
+  { pregunta: 'Registra el monitoreo del Balance Hídrico-Electrolítico y funciones vitales de acuerdo a la NTS 211-DGIESP/MINSA-2024 (VERIFICAR Agregar Anexo).', opcion: '', observacion: '' },
+]);
+
+const PreguntasUPSSLAB = ref([
+  { pregunta: 'El profesional médico solicita los examenes de laboratorio para los casos de dengue acorde a las Fases de la Enfermedad, de acuerdo a la NTS 211-DGIESP/MINSA-2024.', opcion: '', observacion: '' },
+  { pregunta: 'Cuenta con profesional de laboratorio (Biólogo, tecnólogo médico o técnico de laboratorio capacitado y entrenado) para el procesamiento de muestras para el diagnóstico de Dengue, según corresponda.', opcion: '', observacion: '' },
+  { pregunta: 'Cuenta con insumos para las pruebas serológicas o pruebas moleculares, en el Laboratorio del E.S. - Kits de ELISA NS1 - Kits de ELISA IgM - Kits de PCR tiempo real para serotipos de Dengue', opcion: '', observacion: '' },
+  { pregunta: 'El E.S. gestiona para asegurar el abastecimiento de pruebas para dengue de acuerdo a la magnitud de casos por brote de dengue, según norma vigente..', opcion: '', observacion: '' },
+]);
+
+const PreguntasUPSSFAR = ref([
+  { pregunta: 'Gestiona la disponibilidad de productos farmacéuticos y dispositivos medicos según Anexo 3.', opcion: '', observacion: '' },
+  { pregunta: 'Gestiona el abastecimiento de productos farmacéuticos y dispositivos médicos, de los ítems establecidos en el Anexo 3.', opcion: '', observacion: '' },
+  { pregunta: 'Cuenta con insumos para las pruebas serológicas o pruebas moleculares, en el Laboratorio del E.S. - Kits de ELISA NS1 - Kits de ELISA IgM - Kits de PCR tiempo real para serotipos de Dengue', opcion: '', observacion: '' },
+  { pregunta: 'Mantiene actualizado la herramienta Informática del ICI-SISMED.', opcion: '', observacion: '' },
+]);
+
+const PreguntasUPSSEXT = ref([
+  { pregunta: 'Cuenta con ambiente o área cercano al tópico o servicio de emergencia.', opcion: '', observacion: '' },
+  { pregunta: 'En este ambiente se realiza el monitoreo clínico continuo de pacientes con dengue con signos de alarma durante las 24 horas, asi como los del Plan B1. Hoja de monitoreo de pacientes con Dengue. (Ver Anexo 4.1- 4.2).', opcion: '', observacion: '' },
+  { pregunta: 'Cuenta con capacidad mínima de 2 camas de observación con área mínima de 9 m² por cama, cada cama con su mosquitero adecuado.', opcion: '', observacion: '' },
+  { pregunta: 'Cuenta con equipamiento mínimo, según (Anexo 2).', opcion: '', observacion: '' },
+  { pregunta: 'Cuenta con personal de salud completo (médico, enfermera y técnico de enfermería) por turno para la atención continua de los pacientes las 24 horas.', opcion: '', observacion: '' },
+  { pregunta: 'Refiere los casos con Dengue Grave (Grupo C) a una unidad especializada de manejo de paciente crítico, como la Unidad de Cuidados Intensivos (UCI) iniciando estabilización hemodinámica (Ver Anexo 5).', opcion: '', observacion: '' },
+  { pregunta: 'Dispone las 24 horas de ambulancia para el traslado de los pacientes que presenten alguna complicación o agravamiento de la enfermedad por dengue.', opcion: '', observacion: '' },
+  { pregunta: 'Registra el monitoreo del Balance Hídrico-Electrolítico y funciones vitales de acuerdo a la NTS 211-DGIESP/MINSA-2024.', opcion: '', observacion: '' },
+]);
+
+const PreguntasFEBRIL = ref([
+  { pregunta: 'Cuenta con espacio físico acondicionado para diagnóstico clínico y tratamiento de pacientes con: - Grupo A (Caso de Dengue sin signos de alarma) - Grupo B1 (Caso de Dengue sin signos de alarma más afección asociada o riesgo como gestante, niño, adulto mayor)', opcion: '', observacion: '' },
+  { pregunta: 'Cuenta con la Hoja de monitoreo de pacientes con Dengue en UF. Ver Anexo 1.', opcion: '', observacion: '' },
+  { pregunta: 'Cuenta con médico, enfermera u otro profesional de la salud capacitado que realiza la atención de salud de manera continua las 12 horas del día.', opcion: '', observacion: '' },
+  { pregunta: 'Cuenta con capacidad mínima de 2 camas de observación, con un área de por lo menos 9 m2 por cama y cada cama con su mosquitero.', opcion: '', observacion: '' },
+  { pregunta: 'Cuenta con equipamiento mínimo según Anexo 2.', opcion: '', observacion: '' },
+  { pregunta: 'El personal de salud cumple las Precauciones estándar en bioseguridad durante la atención de pacientes con Dengue.- Higiene de manos- Uso de EPP- Limpieza y desinfección de ambientes- Limpieza, desinfección y esterilización de materiales y equipos - Aislamiento de pacientes- Manejo de residuos sólidos - Prevención de pinchazo de aguja y lesiones con otros instrumentos afilados ', opcion: '', observacion: '' },
+  { pregunta: 'Deriva los casos con Dengue (Grupo A y Grupo B1) que presentan signos de alarma para monitoreo permanente en la Unidad de Vigilancia Clínica (UVICLIN) o refiere a otro E.S que cuente con UVICLIN.', opcion: '', observacion: '' },
+  { pregunta: 'Cuenta con disponibilidad de productos farmacéuticos y dispositivos medicos según Anexo 3', opcion: '', observacion: '' },
+]);
+
+const PreguntasREF = ref([
+  { pregunta: 'El establecimiento de salud cuenta con el mapa del flujo de referencia y contrareferencia definido y socializado por la Autoridad Sanitaria  publicado en un lugar visible, para la continuidad de la atención de casos con dengue.', opcion: '', observacion: '' },
 ]);
 
 const LISTAR = async () => {
@@ -271,6 +584,41 @@ const ADD = async () => {
         pregunta: p.pregunta,
         opcion: p.opcion,
         observacion: p.observacion,
+      })),
+      ...preguntasUPSS.value.map(p => ({
+        pregunta: p.pregunta,
+        opcion: p.opcion,
+        observacion: p.observacion,
+      })),
+      ...preguntasInternamiento.value.map(p => ({
+        pregunta: p.pregunta,
+        opcion: p.opcion,
+        observacion: p.observacion,
+      })),
+      ...PreguntasUPSSLAB.value.map(p => ({
+        pregunta: p.pregunta,
+        opcion: p.opcion,
+        observacion: p.observacion,
+      })),
+      ...PreguntasUPSSFAR.value.map(p => ({
+        pregunta: p.pregunta,
+        opcion: p.opcion,
+        observacion: p.observacion,
+      })),
+      ...PreguntasUPSSEXT.value.map(p => ({
+        pregunta: p.pregunta,
+        opcion: p.opcion,
+        observacion: p.observacion,
+      })),
+      ...PreguntasFEBRIL.value.map(p => ({
+        pregunta: p.pregunta,
+        opcion: p.opcion,
+        observacion: p.observacion,
+      })),
+      ...PreguntasREF.value.map(p => ({
+        pregunta: p.pregunta,
+        opcion: p.opcion,
+        observacion: p.observacion,
       }))
     ];
 
@@ -284,13 +632,30 @@ const ADD = async () => {
       codigo: codigo.value,
       disa: disa.value,
       horario_atencion: horario_atencion.value,
+      otrosHallazgos: otrosHallazgos.value,
       preguntas: todasLasPreguntas, // Enviamos todas las preguntas combinadas
     };
 
-    console.log('Datos a enviar:', data); // Verifica los datos antes de enviarlos
+    // Crear un FormData para enviar las imágenes
+    const formData = new FormData();
+    formData.append('data', JSON.stringify(data));
+
+    // Agregar las imágenes al FormData
+    imagenes.value.forEach((img, index) => {
+      const file = dataURLtoFile(img, `imagen_${index}.png`);
+      formData.append('imagenes', file);
+    });
+
+
+
+    //console.log('Datos a enviar:', data);
 
     // Enviar la solicitud POST a tu API
-    const response = await api.post('dengue/dengue/', data);
+    const response = await api.post('dengue/dengue/', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
 
     // Manejar la respuesta
     if (response.status === 201) { // Asegúrate de que el código de éxito sea el correcto
@@ -317,17 +682,51 @@ const ADD = async () => {
     }
   }
 };
-
+// Función para convertir data URL a File
+const dataURLtoFile = (dataurl, filename) => {
+  const arr = dataurl.split(',');
+  const mime = arr[0].match(/:(.*?);/)[1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new File([u8arr], filename, { type: mime });
+};
 
 // Función para formatear el código a 8 dígitos
 const formatCodigo = (codigo) => {
   return codigo.toString().padStart(8, '0');
 };
-// Función para obtener la fecha y hora actual en formato "YYYY-MM-DD HH:MM:SS"
+
 const obtenerFechaHoraActual = () => {
   const ahora = new Date();
-  return ahora.toISOString().slice(0, 19).replace("T", " "); // Formato YYYY-MM-DD HH:MM:SS
+  const opcionesFecha = { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'America/Lima' };
+  const opcionesHora = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: 'America/Lima' };
+
+  const fecha = new Intl.DateTimeFormat('es-PE', opcionesFecha).format(ahora).replace(/\//g, '-');
+  const hora = new Intl.DateTimeFormat('es-PE', opcionesHora).format(ahora);
+
+  return `${fecha} ${hora}`;
 };
+
+// Actualizar el valor del input cada segundo
+document.addEventListener("DOMContentLoaded", function () {
+  const campoFechaHora = document.getElementById("fecha_subida");
+
+  const actualizarFechaHora = () => {
+    campoFechaHora.value = obtenerFechaHoraActual();
+  };
+
+  // Llamar inmediatamente al cargar
+  actualizarFechaHora();
+
+  // Actualizar cada segundo
+  setInterval(actualizarFechaHora, 1000);
+});
+
+
 
 watch(usuario, (newVal) => {
   if (newVal) {
@@ -376,14 +775,89 @@ const BuscarIPRESS = (searchText) => {
 };
 // Usamos un watch para actualizar el input oculto cada vez que cambia el valor de 'usuario'
 watch(usuario, (newUsuario) => {
-  console.log('Usuario seleccionado:', newUsuario);
+  //console.log('Usuario seleccionado:', newUsuario);
   user.value = newUsuario ? newUsuario.username : null; // Asignar el username en lugar del id
 });
 
 watch(establecimientos, (newEstablecimiento) => {
-  console.log('establecimiento seleccionado:', newEstablecimiento);
+  //console.log('establecimiento seleccionado:', newEstablecimiento);
   establecimiento.value = newEstablecimiento ? newEstablecimiento.establecimiento : null; // Asignar el username en lugar del id
 });
+
+
+// Método para capturar fotos
+const capturarFotos = (event) => {
+  const files = Array.from(event.target.files);
+
+  // Limitar a 5 imágenes
+  if (imagenes.value.length + files.length > 5) {
+    alert("Solo puedes subir hasta 5 imágenes.");
+    return;
+  }
+
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      imagenes.value.push(e.target.result);
+    };
+    reader.readAsDataURL(file);
+  });
+};
+
+// Método para eliminar una foto
+const eliminarFoto = (index) => {
+  imagenes.value.splice(index, 1);
+};
+
+const calcularCamposPendientes = () => {
+  let pendientes = 0;
+
+  // Verificar campos del monitor
+  if (!usuario.value) pendientes++;
+  if (!nombre.value) pendientes++;
+  if (!email.value) pendientes++;
+  if (!fecha_subida.value) pendientes++;
+
+  // Verificar campos del establecimiento
+  if (!establecimientos.value) pendientes++;
+  if (!categoria.value) pendientes++;
+  if (!codigo.value) pendientes++;
+  if (!disa.value) pendientes++;
+  if (!horario_atencion.value) pendientes++;
+
+  // Verificar preguntas
+  const todasLasPreguntas = [
+    ...preguntas.value,
+    ...preguntasTriajeNuevas.value,
+    ...preguntasAmbiente.value,
+    ...preguntasUPSS.value,
+    ...preguntasInternamiento.value,
+    ...PreguntasUPSSLAB.value,
+    ...PreguntasUPSSFAR.value,
+    ...PreguntasUPSSEXT.value,
+    ...PreguntasFEBRIL.value,
+    ...PreguntasREF.value
+  ];
+
+  todasLasPreguntas.forEach(pregunta => {
+    if (!pregunta.opcion || !pregunta.observacion) pendientes++;
+  });
+
+  // Verificar otros hallazgos
+  if (!otrosHallazgos.value) pendientes++;
+
+  return pendientes;
+};
+
+const camposPendientes = ref(calcularCamposPendientes());
+
+watch([usuario, nombre, email, fecha_subida, establecimientos, categoria, codigo, disa, horario_atencion, otrosHallazgos], () => {
+  camposPendientes.value = calcularCamposPendientes();
+});
+
+watch([preguntas, preguntasTriajeNuevas, preguntasAmbiente, preguntasUPSS, preguntasInternamiento, PreguntasUPSSLAB, PreguntasUPSSFAR, PreguntasUPSSEXT, PreguntasFEBRIL, PreguntasREF], () => {
+  camposPendientes.value = calcularCamposPendientes();
+}, { deep: true });
 </script>
 
 
@@ -425,5 +899,157 @@ watch(establecimientos, (newEstablecimiento) => {
 
 .txt-justify {
   text-align: justify;
+}
+
+.form-select {
+  text-align: center;
+  display: block;
+  width: 100%;
+}
+
+.circle-container {
+  position: fixed;
+  /* Usa "fixed" para que flote siempre en la pantalla */
+  top: 30%;
+  /* 100px desde la parte superior */
+  left: 10px;
+  /* 20px desde la derecha */
+  text-align: center;
+  z-index: 1000;
+  /* Asegura que esté por encima de otros elementos */
+}
+
+.circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #fd1e00;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.counter {
+  line-height: 30px;
+  /* Ajusta el line-height para que coincida con la altura del círculo */
+}
+
+.circle-green {
+  background-color: #f4f5f4;
+  /* Verde */
+  border: 1px solid green;
+}
+
+.check {
+  font-size: 20px;
+  color: white;
+}
+
+h3 {
+  font-family: 'Poppins', sans-serif;
+  /* Fuente moderna */
+  font-weight: 600;
+  /* Grosor de la fuente */
+  font-size: 1.8rem;
+  /* Tamaño del texto */
+  color: transparent;
+  /* Texto transparente para aplicar el degradado */
+  background: linear-gradient(90deg, #5a5f8b, #42464d);
+  /* Degradado moderno */
+  -webkit-background-clip: text;
+  /* Aplicar el degradado al texto */
+  background-clip: text;
+  text-transform: uppercase;
+  /* Convertir texto a mayúsculas */
+  letter-spacing: 1.5px;
+  /* Espaciado entre letras */
+  position: relative;
+  /* Para el subrayado */
+  margin-bottom: 20px;
+  /* Espacio inferior */
+  text-shadow: 2px 2px 8px rgba(104, 104, 255, 0.5);
+  /* Sombra más pronunciada */
+  animation: glow 3s infinite;
+  /* Animación de resplandor */
+}
+
+h3::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -10px;
+  /* Posición del subrayado */
+  width: 60px;
+  /* Longitud inicial del subrayado */
+  height: 4px;
+  /* Grosor del subrayado */
+  background: linear-gradient(90deg, #1a146e, #2963c7);
+  /* Degradado moderno */
+  border-radius: 2px;
+  /* Bordes redondeados */
+  transition: width 0.3s ease-in-out;
+  /* Transición suave */
+}
+
+h3:hover::after {
+  width: 100%;
+  /* Extender el subrayado al 100% */
+}
+
+.section-title {
+  font-family: 'Montserrat', sans-serif;
+  /* Puedes usar otra fuente moderna si lo prefieres */
+  font-size: 1.75rem;
+  /* Tamaño moderno */
+  font-weight: 800;
+  /* Más negrita para resaltar */
+  text-transform: uppercase;
+  /* Todo en mayúsculas */
+  letter-spacing: 0.15em;
+  /* Espaciado entre letras para un look más amplio */
+  margin: 0;
+  padding-bottom: 0.5rem;
+  /* Espaciado inferior */
+  border-bottom: 3px solid rgba(255, 255, 255, 0.7);
+  /* Línea inferior sutil */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  /* Sombra para dar profundidad */
+}
+
+
+.btn-primary {
+  background: linear-gradient(90deg, #6a11cb, #2575fc);
+  border: none;
+  color: white;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 25px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.btn-primary:hover {
+  transform: scale(1.05);
+  /* Efecto de escala al pasar el mouse */
+}
+
+.fila-completa {
+  background-color: #e8f5e9;
+  /* Verde claro */
+  border-left: 4px solid #4caf50;
+  /* Borde izquierdo verde */
+  transition: background-color 0.3s ease, border-left 0.3s ease;
+  /* Transición suave */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  /* Sombra sutil */
+}
+
+.fila-completa:hover {
+  background-color: #d4edda;
+  /* Cambio de color al pasar el mouse */
+  border-left: 4px solid #45a049;
+  /* Borde más oscuro */
 }
 </style>
