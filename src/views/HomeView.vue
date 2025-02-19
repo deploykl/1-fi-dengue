@@ -30,7 +30,7 @@
                 <v-select v-model="usuario" :options="filteredUsuariosAPI" label="username"
                   placeholder="Escriba el usuario" :filterable="false" :searchable="true" required
                   @search="BuscarUSUARIO" :no-options-text="'No hay opciones disponibles'" />
-                <input type="hidden" v-model="usuario.username" name="user" />
+                <input type="hidden" :value="usuario ? usuario.username : ''" name="user" />
               </div>
 
               <div class="col-md-3 col-sm-12">
@@ -63,15 +63,15 @@
               </div>
               <div class="col-md-4 col-sm-12">
                 <label for="categoria" class="form-label"><strong>Categoría:</strong></label>
-                <input type="text" class="form-control" id="categoria" v-model="categoria" readonly>
+                <input type="text" class="form-control" id="categoria" v-model="categoria" required readonly>
               </div>
               <div class="col-md-3 col-sm-12">
                 <label for="codigo" class="form-label"><strong>Código:</strong></label>
-                <input type="text" class="form-control" id="codigo" v-model="codigo" readonly>
+                <input type="text" class="form-control" id="codigo" v-model="codigo" required readonly>
               </div>
               <div class="col-md-3 col-sm-12">
                 <label for="disa" class="form-label"><strong>Disa/Geresa/Diris:</strong></label>
-                <input type="text" class="form-control" id="disa" v-model="disa" readonly>
+                <input type="text" class="form-control" id="disa" v-model="disa" required readonly>
               </div>
               <div class="col-md-2 col-sm-12">
                 <label for="horario_atencion" class="form-label"><strong>Horario de atención:</strong></label>
@@ -83,7 +83,8 @@
               </div>
             </div>
             <hr>
-            <div class="row">
+            <div class="row"
+              style="align-items: center; border: 1px solid #ccc; border-radius: 5px; padding: 10px; margin-bottom: 10px;">
               <div class="col-md-5 col-sm-12">
                 <h5 class="form-label text-center fw-bold text-dark">ITEMS</h5>
               </div>
@@ -98,265 +99,250 @@
 
             <div class="row">
               <div class="col-md-12">
-                <h3><strong>ORGANIZACIÓN DE LA ATENCIÓN DEL ESTABLECIMIENTO DE SALUD: ASPECTOS
-                    GENERALES</strong></h3>
+                <h3><strong>ORGANIZACIÓN DE LA ATENCIÓN DEL ESTABLECIMIENTO DE SALUD: ASPECTOS GENERALES</strong></h3>
                 <hr>
               </div>
-              <div class="row" v-for="(pregunta, index) in preguntas" :key="index"
-                :class="{ 'fila-completa': pregunta.opcion && pregunta.observacion }">
-                <div class="col-md-6 col-sm-12">
-                  <p class="form-label txt-justify" v-text="pregunta.pregunta" style="user-select: none;"></p>
-                </div>
-                <div class="col-md-2 col-sm-12 mb-4">
-                  <select v-model="pregunta.opcion" class="form-select">
-                    <option value="" disabled selected>Seleccione opción</option>
-                    <option value="SI">SI</option>
-                    <option value="NO">NO</option>
-                    <option value="NO APLICA">NO APLICA</option>
-                  </select>
-                </div>
-                <div class="col-md-4 col-sm-12 mb-4">
-                  <textarea class="form-control" v-model="pregunta.observacion"></textarea>
-                </div>
-              </div>
-              <hr>
-            </div>
-          </div>
-
-          <!-- Sección Área de Admisión / Área de Triaje -->
-          <div class="row">
-            <div class="col-md-12">
-              <h3><strong>ÁREA DE ADMISIÓN/ÁREA DE TRIAJE</strong></h3>
-              <hr>
             </div>
 
-            <div class="row" v-for="(pregunta, index) in preguntasTriajeNuevas" :key="index"
-              :class="{ 'fila-completa': pregunta.opcion && pregunta.observacion }">
-              <div class="col-md-6 col-sm-12">
-                <p class="form-label txt-justify" v-text="pregunta.pregunta" style="user-select: none;"></p>
+            <div class="row bg-per" v-for="(pregunta, index) in preguntas" :key="index"
+              :class="{ 'fila-completa ': pregunta.opcion && pregunta.observacion }">
+              <div class="col-md-6 col-sm-12 d-flex align-items-center">
+                <p class="form-label txt-justify mb-0" v-text="pregunta.pregunta" style="user-select: none;"></p>
               </div>
-              <div class="col-md-2 col-sm-12 mb-4">
-                <select v-model="pregunta.opcion" class="form-select">
+              <div class="col-md-2 col-sm-12 d-flex align-items-center justify-content-center mb-2 mb-md-0">
+                <select v-model="pregunta.opcion" class="form-select" required>
                   <option value="" disabled selected>Seleccione opción</option>
                   <option value="SI">SI</option>
                   <option value="NO">NO</option>
                   <option value="NO APLICA">NO APLICA</option>
                 </select>
               </div>
-              <div class="col-md-4 col-sm-12 mb-4">
+              <div class="col-md-4 col-sm-12 d-flex align-items-center">
                 <textarea class="form-control" v-model="pregunta.observacion"></textarea>
               </div>
             </div>
-            <hr>
-          </div>
 
-          <!-- Sección AMBIENTE DE TOPICO DE ATENCIÓN Y/O OBSERVACION-->
-          <div class="row">
-            <div class="col-md-12">
-              <h3><strong>AMBIENTE DE TOPICO DE ATENCIÓN Y/O OBSERVACIÓN</strong></h3>
-              <hr>
+            <div class="row">
+              <div class="col-md-12">
+                <hr>
+              </div>
             </div>
-
-            <div class="row" v-for="(pregunta, index) in preguntasAmbiente" :key="index"
+            <!-- Sección Área de Admisión / Área de Triaje -->
+            <div class="row">
+              <div class="col-md-12">
+                <h3><strong>ÁREA DE ADMISIÓN/ÁREA DE TRIAJE</strong></h3>
+              </div>
+            </div>
+            <hr>
+            <div class="row bg-per" v-for="(pregunta, index) in preguntasTriajeNuevas" :key="index"
               :class="{ 'fila-completa': pregunta.opcion && pregunta.observacion }">
               <div class="col-md-6 col-sm-12">
                 <p class="form-label txt-justify" v-text="pregunta.pregunta" style="user-select: none;"></p>
               </div>
-              <div class="col-md-2 col-sm-12 mb-4">
-                <select v-model="pregunta.opcion" class="form-select">
+              <div class="col-md-2 col-sm-12 d-flex align-items-center justify-content-center mb-2 mb-md-0">
+                <select v-model="pregunta.opcion" class="form-select" required>
                   <option value="" disabled selected>Seleccione opción</option>
                   <option value="SI">SI</option>
                   <option value="NO">NO</option>
                   <option value="NO APLICA">NO APLICA</option>
                 </select>
               </div>
-              <div class="col-md-4 col-sm-12 mb-4">
+              <div class="col-md-4 col-sm-12 d-flex align-items-center">
                 <textarea class="form-control" v-model="pregunta.observacion"></textarea>
               </div>
             </div>
             <hr>
-          </div>
 
-          <!-- Sección UPSS DE CONSULTA EXTERNA-->
-          <div class="row">
-            <div class="col-md-12">
-              <h3><strong>UPSS DE CONSULTA EXTERNA</strong></h3>
-              <hr>
+            <!-- Sección AMBIENTE DE TOPICO DE ATENCIÓN Y/O OBSERVACION-->
+            <div class="row">
+              <div class="col-md-12">
+                <h3><strong>AMBIENTE DE TOPICO DE ATENCIÓN Y/O OBSERVACIÓN</strong></h3>
+              </div>
             </div>
-
-            <div class="row" v-for="(pregunta, index) in preguntasUPSS" :key="index"
+            <hr>
+            <div class="row bg-per" v-for="(pregunta, index) in preguntasAmbiente" :key="index"
               :class="{ 'fila-completa': pregunta.opcion && pregunta.observacion }">
               <div class="col-md-6 col-sm-12">
                 <p class="form-label txt-justify" v-text="pregunta.pregunta" style="user-select: none;"></p>
               </div>
-              <div class="col-md-2 col-sm-12 mb-4">
-                <select v-model="pregunta.opcion" class="form-select">
+              <div class="col-md-2 col-sm-12 d-flex align-items-center justify-content-center mb-2 mb-md-0">
+                <select v-model="pregunta.opcion" class="form-select" required>
                   <option value="" disabled selected>Seleccione opción</option>
                   <option value="SI">SI</option>
                   <option value="NO">NO</option>
                   <option value="NO APLICA">NO APLICA</option>
                 </select>
               </div>
-              <div class="col-md-4 col-sm-12 mb-4">
+              <div class="col-md-4 col-sm-12 d-flex align-items-center">
                 <textarea class="form-control" v-model="pregunta.observacion"></textarea>
               </div>
             </div>
             <hr>
-          </div>
 
-          <!-- SecciónINTERNAMIENTO -->
-          <div class="row">
-            <div class="col-md-12">
-              <h3><strong>INTERNAMIENTO</strong></h3>
+            <!-- Sección UPSS DE CONSULTA EXTERNA-->
+            <div class="row">
+              <div class="col-md-12">
+                <h3><strong>UPSS DE CONSULTA EXTERNA</strong></h3>
+              </div>
               <hr>
             </div>
-
-            <div class="row" v-for="(pregunta, index) in preguntasInternamiento" :key="index"
+            <div class="row bg-per" v-for="(pregunta, index) in preguntasUPSS" :key="index"
               :class="{ 'fila-completa': pregunta.opcion && pregunta.observacion }">
               <div class="col-md-6 col-sm-12">
                 <p class="form-label txt-justify" v-text="pregunta.pregunta" style="user-select: none;"></p>
               </div>
-              <div class="col-md-2 col-sm-12 mb-4">
-                <select v-model="pregunta.opcion" class="form-select">
+              <div class="col-md-2 col-sm-12 d-flex align-items-center justify-content-center mb-2 mb-md-0">
+                <select v-model="pregunta.opcion" class="form-select" required>
                   <option value="" disabled selected>Seleccione opción</option>
                   <option value="SI">SI</option>
                   <option value="NO">NO</option>
                   <option value="NO APLICA">NO APLICA</option>
                 </select>
               </div>
-              <div class="col-md-4 col-sm-12 mb-4">
+              <div class="col-md-4 col-sm-12 d-flex align-items-center">
                 <textarea class="form-control" v-model="pregunta.observacion"></textarea>
               </div>
             </div>
             <hr>
-          </div>
-
-          <!-- UPSS  DE LABORATORIO -->
-          <div class="row">
-            <div class="col-md-12">
-              <h3><strong>UPSS DE LABORATORIO</strong></h3>
+            <!-- SecciónINTERNAMIENTO -->
+            <div class="row">
+              <div class="col-md-12">
+                <h3><strong>INTERNAMIENTO</strong></h3>
+              </div>
               <hr>
             </div>
-
-            <div class="row" v-for="(pregunta, index) in PreguntasUPSSLAB" :key="index"
+            <div class="row bg-per" v-for="(pregunta, index) in preguntasInternamiento" :key="index"
               :class="{ 'fila-completa': pregunta.opcion && pregunta.observacion }">
               <div class="col-md-6 col-sm-12">
                 <p class="form-label txt-justify" v-text="pregunta.pregunta" style="user-select: none;"></p>
               </div>
-              <div class="col-md-2 col-sm-12 mb-4">
-                <select v-model="pregunta.opcion" class="form-select">
+              <div class="col-md-2 col-sm-12 d-flex align-items-center justify-content-center mb-2 mb-md-0">
+                <select v-model="pregunta.opcion" class="form-select" required>
                   <option value="" disabled selected>Seleccione opción</option>
                   <option value="SI">SI</option>
                   <option value="NO">NO</option>
                   <option value="NO APLICA">NO APLICA</option>
                 </select>
               </div>
-              <div class="col-md-4 col-sm-12 mb-4">
+              <div class="col-md-4 col-sm-12 d-flex align-items-center">
                 <textarea class="form-control" v-model="pregunta.observacion"></textarea>
               </div>
             </div>
             <hr>
-          </div>
-
-          <!-- UPSS FARMACIA -->
-          <div class="row">
-            <div class="col-md-12">
-              <h3><strong>UPSS FARMACIA</strong></h3>
+            <!-- UPSS  DE LABORATORIO -->
+            <div class="row">
+              <div class="col-md-12">
+                <h3><strong>UPSS DE LABORATORIO</strong></h3>
+              </div>
               <hr>
             </div>
-
-            <div class="row" v-for="(pregunta, index) in PreguntasUPSSFAR" :key="index"
+            <div class="row bg-per" v-for="(pregunta, index) in PreguntasUPSSLAB" :key="index"
               :class="{ 'fila-completa': pregunta.opcion && pregunta.observacion }">
               <div class="col-md-6 col-sm-12">
                 <p class="form-label txt-justify" v-text="pregunta.pregunta" style="user-select: none;"></p>
               </div>
-              <div class="col-md-2 col-sm-12 mb-4">
-                <select v-model="pregunta.opcion" class="form-select">
+              <div class="col-md-2 col-sm-12 d-flex align-items-center justify-content-center mb-2 mb-md-0">
+                <select v-model="pregunta.opcion" class="form-select" required>
                   <option value="" disabled selected>Seleccione opción</option>
                   <option value="SI">SI</option>
                   <option value="NO">NO</option>
                   <option value="NO APLICA">NO APLICA</option>
                 </select>
               </div>
-              <div class="col-md-4 col-sm-12 mb-4">
+              <div class="col-md-4 col-sm-12 d-flex align-items-center">
                 <textarea class="form-control" v-model="pregunta.observacion"></textarea>
               </div>
             </div>
             <hr>
-          </div>
 
-          <!-- EXTENSION DE LA OFERTA:  AMBIENTE DE LA UNIDAD DE VIGILANCIA CLÍNICA (UVICLIN)  -->
-          <div class="row">
-            <div class="col-md-12">
-              <h3><strong>EXTENSION DE LA OFERTA: AMBIENTE DE LA UNIDAD DE VIGILANCIA CLÍNICA (UVICLIN) </strong></h3>
-              <hr>
+            <!-- UPSS FARMACIA -->
+            <div class="row">
+              <div class="col-md-12">
+                <h3><strong>UPSS FARMACIA</strong></h3>
+              </div>
             </div>
-
-            <div class="row" v-for="(pregunta, index) in PreguntasUPSSEXT" :key="index"
+            <hr>
+            <div class="row bg-per" v-for="(pregunta, index) in PreguntasUPSSFAR" :key="index"
               :class="{ 'fila-completa': pregunta.opcion && pregunta.observacion }">
               <div class="col-md-6 col-sm-12">
                 <p class="form-label txt-justify" v-text="pregunta.pregunta" style="user-select: none;"></p>
               </div>
-              <div class="col-md-2 col-sm-12 mb-4">
-                <select v-model="pregunta.opcion" class="form-select">
+              <div class="col-md-2 col-sm-12 d-flex align-items-center justify-content-center mb-2 mb-md-0">
+                <select v-model="pregunta.opcion" class="form-select" required>
                   <option value="" disabled selected>Seleccione opción</option>
                   <option value="SI">SI</option>
                   <option value="NO">NO</option>
                   <option value="NO APLICA">NO APLICA</option>
                 </select>
               </div>
-              <div class="col-md-4 col-sm-12 mb-4">
+              <div class="col-md-4 col-sm-12 d-flex align-items-center">
                 <textarea class="form-control" v-model="pregunta.observacion"></textarea>
               </div>
             </div>
             <hr>
-          </div>
-
-
-          <!-- EXTENSION DE LA OFERTA:  AMBIENTE DE LA UNIDAD DE VIGILANCIA CLÍNICA (UVICLIN)  -->
-          <div class="row">
-            <div class="col-md-12">
-              <h3><strong>DE LA UNIDAD FEBRIL (UF) </strong></h3>
-              <hr>
+            <!-- EXTENSION DE LA OFERTA:  AMBIENTE DE LA UNIDAD DE VIGILANCIA CLÍNICA (UVICLIN)  -->
+            <div class="row">
+              <div class="col-md-12">
+                <h3><strong>EXTENSION DE LA OFERTA: AMBIENTE DE LA UNIDAD DE VIGILANCIA CLÍNICA (UVICLIN) </strong></h3>
+              </div>
             </div>
-
-            <div class="row" v-for="(pregunta, index) in PreguntasFEBRIL" :key="index"
+            <hr>
+            <div class="row bg-per" v-for="(pregunta, index) in PreguntasUPSSEXT" :key="index"
               :class="{ 'fila-completa': pregunta.opcion && pregunta.observacion }">
               <div class="col-md-6 col-sm-12">
                 <p class="form-label txt-justify" v-text="pregunta.pregunta" style="user-select: none;"></p>
               </div>
-              <div class="col-md-2 col-sm-12 mb-4">
-                <select v-model="pregunta.opcion" class="form-select">
+              <div class="col-md-2 col-sm-12 d-flex align-items-center justify-content-center mb-2 mb-md-0">
+                <select v-model="pregunta.opcion" class="form-select" required>
                   <option value="" disabled selected>Seleccione opción</option>
                   <option value="SI">SI</option>
                   <option value="NO">NO</option>
                   <option value="NO APLICA">NO APLICA</option>
                 </select>
               </div>
-              <div class="col-md-4 col-sm-12 mb-4">
+              <div class="col-md-4 col-sm-12 d-flex align-items-center">
                 <textarea class="form-control" v-model="pregunta.observacion"></textarea>
               </div>
             </div>
             <hr>
-          </div>
-
-          <!-- REFERENCIA Y CONTRARREFERENCIA -->
-          <div class="row mt-4">
-            <div class="col-md-12">
-              <h3><strong>REFERENCIA Y CONTRARREFERENCIA</strong></h3>
-              <hr class="my-3">
+            <!-- EXTENSION DE LA OFERTA:  AMBIENTE DE LA UNIDAD DE VIGILANCIA CLÍNICA (UVICLIN)  -->
+            <div class="row">
+              <div class="col-md-12">
+                <h3><strong>DE LA UNIDAD FEBRIL (UF) </strong></h3>
+              </div>
             </div>
-
-            <div class="row" v-for="(pregunta, index) in PreguntasREF" :key="index"
+            <hr>
+            <div class="row bg-per" v-for="(pregunta, index) in PreguntasFEBRIL" :key="index"
               :class="{ 'fila-completa': pregunta.opcion && pregunta.observacion }">
-
-              <!-- Pregunta -->
               <div class="col-md-6 col-sm-12">
                 <p class="form-label txt-justify" v-text="pregunta.pregunta" style="user-select: none;"></p>
               </div>
-
-              <!-- Opción -->
-              <div class="col-md-3 col-sm-12 mb-4">
+              <div class="col-md-2 col-sm-12 d-flex align-items-center justify-content-center mb-2 mb-md-0">
+                <select v-model="pregunta.opcion" class="form-select" required>
+                  <option value="" disabled selected>Seleccione opción</option>
+                  <option value="SI">SI</option>
+                  <option value="NO">NO</option>
+                  <option value="NO APLICA">NO APLICA</option>
+                </select>
+              </div>
+              <div class="col-md-4 col-sm-12 d-flex align-items-center">
+                <textarea class="form-control" v-model="pregunta.observacion"></textarea>
+              </div>
+            </div>
+            <hr>
+            <!-- REFERENCIA Y CONTRARREFERENCIA -->
+            <div class="row mt-4">
+              <div class="col-md-12">
+                <h3><strong>REFERENCIA Y CONTRARREFERENCIA</strong></h3>
+              </div>
+            </div>
+            <hr>
+            <div class="row bg-per" v-for="(pregunta, index) in PreguntasREF" :key="index"
+              :class="{ 'fila-completa': pregunta.opcion && pregunta.observacion }">
+              <div class="col-md-6 col-sm-12 d-flex align-items-center justify-content-center">
+                <p class="form-label txt-justify" v-text="pregunta.pregunta"></p>
+              </div>
+              <div class="col-md-2 col-sm-12 d-flex align-items-center">
                 <select v-model="pregunta.opcion" class="form-select custom-select">
                   <option value="" disabled selected>Seleccione opción</option>
                   <option value="SI">SI</option>
@@ -364,59 +350,67 @@
                   <option value="NO APLICA">NO APLICA</option>
                 </select>
               </div>
+              <div class="col-md-4 col-sm-12 mb-4 d-flex justify-content-center">
+                <textarea class="form-control" v-model="pregunta.observacion" placeholder=""
+                  style="width: 80%;"></textarea>
+              </div>
+            </div>
+            <hr>
 
-              <!-- Observación -->
-              <div class="col-md-3 col-sm-12 mb-4">
-                <textarea class="form-control custom-textarea" v-model="pregunta.observacion"
-                  placeholder="Observación"></textarea>
+            <!-- OTROS HALLAZGOS -->
+            <div class="row">
+              <div class="col-md-2 col-sm-12 d-flex justify-content-center align-items-center">
+                <p class="form-label ">Otros Hallazgos:</p>
+              </div>
+              <div class="col-md-10 col-sm-12 d-flex justify-content-center align-items-center">
+                <textarea class="form-control" v-model="otrosHallazgos"></textarea>
+              </div>
+            </div>
+            <hr>
+            <!-- IMAGENES -->
+            <div class="row bg-per">
+              <div class="col-md-12 mb-3">
+                <h3>Subir Imágenes</h3>
+                <p class="text-muted">Selecciona varias imágenes para subir. Puedes previsualizarlas antes de enviar.
+                </p>
               </div>
 
-            </div>
-            <hr class="my-3">
-          </div>
+              <div class="col-md-12 col-sm-12 d-flex justify-content-center">
+                <div class="col-md-6 col-sm-12">
+                  <div class="input-group">
+                    <input type="file" class="form-control" id="foto" multiple @change="capturarFotos" accept="image/*"
+                      capture>
+                    <label class="input-group-text bg-primary text-white" for="foto">Subir</label>
+                  </div>
+                </div>
+              </div>
 
-
-          <!-- OTROS HALLAZGOS -->
-          <div class="row">
-            <div class="col-md-2 col-sm-12">
-              <p class="form-label txt-justify">Otros Hallazgos:</p>
-            </div>
-            <div class="col-md-10 col-sm-12 mb-4">
-              <textarea class="form-control" v-model="otrosHallazgos"></textarea>
-            </div>
-          </div>
-
-          <!-- IMAGENES -->
-          <div class="row">
-            <div class="col-md-12">
-              <h3><strong>SUBIR IMAGENES</strong></h3>
-            </div>
-            <div class="col-md-4 col-sm-12">
-              <input type="file" class="form-control" id="foto" multiple @change="capturarFotos" accept="image/*"
-                capture>
-            </div>
-            <div class="col-md-12 mt-3">
-              <div v-if="imagenes.length > 0">
-                <h5>Vista previa:</h5>
-                <div class="d-flex flex-wrap">
-                  <div v-for="(img, index) in imagenes" :key="index" class="m-2 position-relative">
-                    <img :src="img" class="img-thumbnail" width="150">
-                    <button class="btn btn-danger btn-sm position-absolute top-0 end-0"
-                      @click="eliminarFoto(index)">X</button>
+              <div class="col-md-12 mt-4" v-if="imagenes.length > 0">
+                <h5 class="text-secondary">Vista Previa</h5>
+                <div class="d-flex flex-wrap gap-3">
+                  <div v-for="(img, index) in imagenes" :key="index"
+                    class="position-relative border rounded shadow-sm bg-light"
+                    style="width: 160px; height: 160px; overflow: hidden;">
+                    <img :src="img" class="img-fluid w-100 h-100 object-fit-cover">
+                    <button class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 rounded-circle"
+                      @click="eliminarFoto(index)">
+                      <i class="fas fa-times"></i>
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <hr>
-          <div class="row">
-            <div class="col-md-12 col-sm-12">
-              <small class="form-label txt-justify"> Fuente: <br>
-                *NTS N° 211-MINSA/DGIESP-2024, Norma Técnica de Salud para la atención interal de pacientes con dengue
-                en el Perú, aprobada por Resolución Ministerial N° 175-2024/MINSA.
-                **Protocolo Sanitario de Urgencia: "Organización de Servicios de Salud ante Epidemia de Dengue",
-                aprobada por Resolución Viceministerial N° 012-2016-SA-DVM-SP.</small>
+
+            <hr>
+            <div class="row bg-per">
+              <div class="col-md-12 col-sm-12">
+                <small class="form-label txt-justify"> Fuente: <br>
+                  *NTS N° 211-MINSA/DGIESP-2024, Norma Técnica de Salud para la atención interal de pacientes con dengue
+                  en el Perú, aprobada por Resolución Ministerial N° 175-2024/MINSA.
+                  **Protocolo Sanitario de Urgencia: "Organización de Servicios de Salud ante Epidemia de Dengue",
+                  aprobada por Resolución Viceministerial N° 012-2016-SA-DVM-SP.</small>
+              </div>
             </div>
           </div>
 
@@ -428,6 +422,7 @@
       </div>
     </div>
   </div>
+
 </template>
 
 
@@ -774,9 +769,14 @@ const BuscarIPRESS = (searchText) => {
   }
 };
 // Usamos un watch para actualizar el input oculto cada vez que cambia el valor de 'usuario'
-watch(usuario, (newUsuario) => {
-  //console.log('Usuario seleccionado:', newUsuario);
-  user.value = newUsuario ? newUsuario.username : null; // Asignar el username en lugar del id
+watch(usuario, (newVal) => {
+  if (newVal) {
+    nombre.value = `${newVal.first_name} ${newVal.last_name}`;
+    email.value = newVal.email;
+  } else {
+    nombre.value = "";
+    email.value = "";
+  }
 });
 
 watch(establecimientos, (newEstablecimiento) => {
@@ -903,20 +903,15 @@ watch([preguntas, preguntasTriajeNuevas, preguntasAmbiente, preguntasUPSS, pregu
 
 .form-select {
   text-align: center;
-  display: block;
   width: 100%;
 }
 
 .circle-container {
   position: fixed;
-  /* Usa "fixed" para que flote siempre en la pantalla */
   top: 30%;
-  /* 100px desde la parte superior */
   left: 10px;
-  /* 20px desde la derecha */
   text-align: center;
   z-index: 1000;
-  /* Asegura que esté por encima de otros elementos */
 }
 
 .circle {
@@ -933,7 +928,7 @@ watch([preguntas, preguntasTriajeNuevas, preguntasAmbiente, preguntasUPSS, pregu
 }
 
 .counter {
-  line-height: 30px;
+  line-height: 25px;
   /* Ajusta el line-height para que coincida con la altura del círculo */
 }
 
@@ -950,30 +945,18 @@ watch([preguntas, preguntasTriajeNuevas, preguntasAmbiente, preguntasUPSS, pregu
 
 h3 {
   font-family: 'Poppins', sans-serif;
-  /* Fuente moderna */
   font-weight: 600;
-  /* Grosor de la fuente */
   font-size: 1.8rem;
-  /* Tamaño del texto */
   color: transparent;
-  /* Texto transparente para aplicar el degradado */
   background: linear-gradient(90deg, #5a5f8b, #42464d);
-  /* Degradado moderno */
   -webkit-background-clip: text;
-  /* Aplicar el degradado al texto */
   background-clip: text;
   text-transform: uppercase;
-  /* Convertir texto a mayúsculas */
   letter-spacing: 1.5px;
-  /* Espaciado entre letras */
   position: relative;
-  /* Para el subrayado */
   margin-bottom: 20px;
-  /* Espacio inferior */
   text-shadow: 2px 2px 8px rgba(104, 104, 255, 0.5);
-  /* Sombra más pronunciada */
   animation: glow 3s infinite;
-  /* Animación de resplandor */
 }
 
 h3::after {
@@ -981,17 +964,11 @@ h3::after {
   position: absolute;
   left: 0;
   bottom: -10px;
-  /* Posición del subrayado */
   width: 60px;
-  /* Longitud inicial del subrayado */
   height: 4px;
-  /* Grosor del subrayado */
   background: linear-gradient(90deg, #1a146e, #2963c7);
-  /* Degradado moderno */
   border-radius: 2px;
-  /* Bordes redondeados */
   transition: width 0.3s ease-in-out;
-  /* Transición suave */
 }
 
 h3:hover::after {
@@ -1001,24 +978,15 @@ h3:hover::after {
 
 .section-title {
   font-family: 'Montserrat', sans-serif;
-  /* Puedes usar otra fuente moderna si lo prefieres */
   font-size: 1.75rem;
-  /* Tamaño moderno */
   font-weight: 800;
-  /* Más negrita para resaltar */
   text-transform: uppercase;
-  /* Todo en mayúsculas */
   letter-spacing: 0.15em;
-  /* Espaciado entre letras para un look más amplio */
   margin: 0;
   padding-bottom: 0.5rem;
-  /* Espaciado inferior */
   border-bottom: 3px solid rgba(255, 255, 255, 0.7);
-  /* Línea inferior sutil */
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-  /* Sombra para dar profundidad */
 }
-
 
 .btn-primary {
   background: linear-gradient(90deg, #6a11cb, #2575fc);
@@ -1037,9 +1005,7 @@ h3:hover::after {
 
 .fila-completa {
   background-color: #e8f5e9;
-  /* Verde claro */
-  border-left: 4px solid #4caf50;
-  /* Borde izquierdo verde */
+  border-left: 30px solid #4caf50;
   transition: background-color 0.3s ease, border-left 0.3s ease;
   /* Transición suave */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -1049,7 +1015,15 @@ h3:hover::after {
 .fila-completa:hover {
   background-color: #d4edda;
   /* Cambio de color al pasar el mouse */
-  border-left: 4px solid #45a049;
+  border-left: 10px solid #45a049;
   /* Borde más oscuro */
+}
+
+.bg-per {
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+  margin-bottom: 10px;
 }
 </style>
