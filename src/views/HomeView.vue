@@ -75,7 +75,7 @@
               </div>
               <div class="col-md-2 col-sm-12">
                 <label for="horario_atencion" class="form-label"><strong>Horario de atención:</strong></label>
-                <select id="horario_atencion" name="horario_atencion" class="form-select" v-model="horario_atencion">
+                <select id="horario_atencion" name="horario_atencion" class="form-select" v-model="horario_atencion" required>
                   <option value="" disabled selected>Seleccione opción</option>
                   <option value="12 Horas">12 horas</option>
                   <option value="24 Horas">24 horas</option>

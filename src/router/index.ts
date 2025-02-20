@@ -9,8 +9,8 @@ const routes: Array<RouteRecordRaw> = [
     component: HomeView
   },
   {
-    path: '/',
-    name: 'vista',
+    path: '/lista',
+    name: 'lista',
     component: VistaView
   },
  

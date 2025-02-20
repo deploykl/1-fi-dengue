@@ -17,10 +17,10 @@
 <script setup>
 import { onMounted, computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
-import HeaderComponentVue from '@/layouts/HeaderComponent.vue';
-import FooterComponentVue from '@/layouts/FooterComponent.vue';
-import AsideComponentVue from '@/layouts/AsideComponent.vue';
-import PageTitleComponentVue from '@/layouts/PageTitleComponent.vue';
+//import HeaderComponentVue from '@/layouts/HeaderComponent.vue';
+//import FooterComponentVue from '@/layouts/FooterComponent.vue';
+//import AsideComponentVue from '@/layouts/AsideComponent.vue';
+//import PageTitleComponentVue from '@/layouts/PageTitleComponent.vue';
 //import ButtonFloatComponentVue from '@/layouts/widgets/ButtonFloatComponent.vue';
 
 // Importa los componentes

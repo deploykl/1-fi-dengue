@@ -22,5 +22,9 @@ import '@/assets/lib/fontawesome-v6.5.2/css/sharp-regular.css'
 import '@/assets/lib/fontawesome-v6.5.2/css/sharp-solid.css'
 import '@/assets/lib/fontawesome-v6.5.2/css/sharp-thin.css'
 
+import 'datatables.net-bs5'; // DataTables + Bootstrap 5
+import 'datatables.net-responsive-bs5'; // Responsive + Bootstrap 5
+import 'datatables.net-bs5/css/dataTables.bootstrap5.min.css';
+import 'datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css';
 
 createApp(App).use(store).use(router).mount('#app')
