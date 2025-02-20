@@ -342,7 +342,7 @@
               <div class="col-md-6 col-sm-12 d-flex align-items-center justify-content-center">
                 <p class="form-label txt-justify" v-text="pregunta.pregunta"></p>
               </div>
-              <div class="col-md-2 col-sm-12 d-flex align-items-center">
+              <div class="col-md-2 col-sm-12 d-flex align-items-center justify-content-center mb-2 mb-md-0">
                 <select v-model="pregunta.opcion" class="form-select custom-select">
                   <option value="" disabled selected>Seleccione opción</option>
                   <option value="SI">SI</option>
@@ -350,9 +350,9 @@
                   <option value="NO APLICA">NO APLICA</option>
                 </select>
               </div>
-              <div class="col-md-4 col-sm-12 mb-4 d-flex justify-content-center">
+              <div class="col-md-4 col-sm-12 d-flex align-items-center">
                 <textarea class="form-control" v-model="pregunta.observacion" placeholder=""
-                  style="width: 80%;"></textarea>
+                  ></textarea>
               </div>
             </div>
             <hr>
